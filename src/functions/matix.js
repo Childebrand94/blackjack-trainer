@@ -185,9 +185,6 @@ const decisionMatrix = {
   },
 }
 
-// Tim let me know if you think this is a good or bad idea to implement a type signature
-// in javaScript
-
 // checkStrategy :: String -> Int -> Int -> String
 const strategyCheck = (handType, dealerCardTotal, playerCardTotal) => {
   // get player options as list
@@ -209,7 +206,7 @@ const strategyCheck = (handType, dealerCardTotal, playerCardTotal) => {
     return decisionMatrix[handType][dealerCardTotal][rangeMatch]
   }
   // if error
-  return -1
+  return ''
 }
 
 // strategyCheck(handType, dealerCardTotal, playerCardTotal)
