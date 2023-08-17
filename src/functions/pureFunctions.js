@@ -81,6 +81,7 @@ const buildDecks = (amount) => {
         value: valueIndex <= 8 ? 2 + valueIndex : royalCards[valueIndex - 9] === 'A' ? 11 : 10,
         name: valueIndex <= 8 ? (2 + valueIndex).toString() : royalCards[valueIndex - 9],
         suit: suit,
+        faceUp: true,
       }
     })
   }
