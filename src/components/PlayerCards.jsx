@@ -8,6 +8,12 @@ const PlayerCards = () => {
         className="absolute"
         style={{ bottom: '20px', left: '30px' }}
       />
+      <img
+        src="src/assets/Cards/cardHeartsJ.png"
+        alt=""
+        className="absolute"
+        style={{ bottom: '40px', left: '60px' }}
+      />
     </div>
   )
 }

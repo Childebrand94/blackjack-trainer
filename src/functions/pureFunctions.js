@@ -1,14 +1,12 @@
-import { nanoid } from 'nanoid'
-
-// hit:: -> Card[] -> [Card, Card[]]
-const hit = (deckCards) => {
+// drawCard:: -> Card[] -> [Card, Card[]]
+const drawCard = (deckCards) => {
   const randomIndex = Math.floor(Math.random() * deckCards.length)
   const newDeck = [...deckCards.filter((_, index) => index !== randomIndex)]
   return [deckCards[randomIndex], newDeck]
 }
 
-console.log('hit')
-console.log(hit(Array.from({ length: 100 }, (_, index) => ({ id: index + 1 }))))
+console.log('drawCard')
+console.log(drawCard(Array.from({ length: 100 }, (_, index) => ({ id: index + 1 }))))
 
 // handTotal:: -> Card[] -> Number
 const handTotal = (hand) => {
@@ -77,11 +75,11 @@ const buildDecks = (amount) => {
     return Array.from({ length: amount * 13 }, (_, index) => {
       const valueIndex = index % 13
       return {
-        id: nanoid(),
+        // potentially remove value key and calculate on the fly
         value: valueIndex <= 8 ? 2 + valueIndex : royalCards[valueIndex - 9] === 'A' ? 11 : 10,
         name: valueIndex <= 8 ? (2 + valueIndex).toString() : royalCards[valueIndex - 9],
         suit: suit,
-        faceUp: true,
+        // faceUp: true,
       }
     })
   }
