@@ -3,6 +3,7 @@ import Home from './pages/Home'
 import StrategyTraining from './pages/StrategyTraining'
 import SpeedCounting from './pages/SpeedCounting'
 import CountingAndStrategy from './pages/CountingAndStrategy'
+import Settings from './pages/Settings'
 
 const App = () => {
   return (
@@ -12,6 +13,7 @@ const App = () => {
         <Route path="/StrategyTraining" element={<StrategyTraining />} />
         <Route path="/SpeedCounting" element={<SpeedCounting />} />
         <Route path="/CountingAndStrategy" element={<CountingAndStrategy />} />
+        <Route path="/Settings" element={<Settings />} />
       </Routes>
     </Router>
   )

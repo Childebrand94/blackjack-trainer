@@ -86,4 +86,8 @@ const buildDecks = (amount) => {
   return suits.flatMap((suit) => createSuitedCards(suit))
 }
 
-console.log(buildDecks(2))
+// console.log(buildDecks(2))
+
+const dealy = (duration, fn) => {
+  setTimeout(fn, duration)
+}

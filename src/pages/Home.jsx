@@ -3,10 +3,8 @@ import NavBar from '../components/NavBar'
 
 const Home = () => {
   return (
-    <main className="h-screen relative">
-      <div className="h-20 w-screen"></div>
+    <main className="h-screen relative" style={{ backgroundColor: '#0a5733' }}>
       <NavBar />
-      <div className="h-3/6 w-screen"></div>
       <Footer />
     </main>
   )
