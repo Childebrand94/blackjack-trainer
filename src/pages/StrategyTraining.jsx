@@ -1,40 +1,45 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/PlayerCards'
-import { buildDecks, dealCard } from '../functions/pureFunctions'
+import { buildDecks, dealCard, dealOrder } from '../functions/pureFunctions'
 
 const StrategyTraining = () => {
-  // const [playerCards, setPlayerCards] = useState([])
-  // const [dealerCards, setDealerCards] = useState([])
-  // const [deckOfCards, setDeckOfCards] = useState([])
-
-  const playerCards = []
-  const dealerCards = []
+  const [playerCards, setPlayerCards] = useState([])
+  const [dealerCards, setDealerCards] = useState([])
+  const [deckOfCards, setDeckOfCards] = useState([])
   const dealCardFaceDown = true
-  const deckOfCards = buildDecks(6)
 
-  const dealStartingCards = (deckOfCards) => {
+  // const playerCards = []
+  // const dealerCards = []
+
+  const deck = buildDecks(1)
+  // setDeckOfCards((prevItem) => [...prevItem, ...deck])
+  // console.log(deckOfCards)
+
+  const dealStartingCards = (deck, playerCards, dealerCards) => {
     // base case if player and dealer both have 2 cards
     if (playerCards.length === 2 && dealerCards.length === 2) {
-      return
+      return [playerCards, dealerCards]
     }
-    // deal a card to the player or dealer
-    const [card, newDeckOfCards] = dealCard(deckOfCards)
-    if (playerCards.length <= dealerCards.length) {
-      playerCards.push(card)
-    } else {
-      dealerCards.push(card)
-    }
-    //recursive call with 1 card less from original deck
-    dealStartingCards(newDeckOfCards)
+    // get a random object from deck return object and deck minus that object
+    const [card, newDeckOfCards] = dealCard(deck)
+    // adding cards objects to player and dealer array in player then dealer order
+    const [updatedPlayerCards, updatedDealerCards] = dealOrder(playerCards, dealerCards, card)
+
+    // Recursive call with 1 card less from original deck
+    return dealStartingCards(newDeckOfCards, updatedPlayerCards, updatedDealerCards)
   }
 
-  const round = (deckOfCards) => {
-    dealStartingCards(deckOfCards)
-  }
+  // Call the recursive function and store the starting hands
+  const [startingPlayerHand, startingDealerHand] = dealStartingCards(deck, playerCards, dealerCards)
 
-  round(deckOfCards)
+  console.log(startingDealerHand)
+  console.log(startingPlayerHand)
+  console.log(deck.length)
+
+  setDealerCards((prevItem) => [...prevItem, ...startingDealerHand])
+  setPlayerCards((prevItem) => [...prevItem, ...startingPlayerHand])
 
   const onClick = () => {
     console.log('Click')

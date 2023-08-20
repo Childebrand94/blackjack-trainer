@@ -1,3 +1,25 @@
+// buildDecks:: Number -> Card[]
+export const buildDecks = (amount) => {
+  const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+  const royalCards = ['J', 'Q', 'K', 'A']
+
+  const createSuitedCards = (suit) => {
+    return Array.from({ length: amount * 13 }, (_, index) => {
+      const valueIndex = index % 13
+      return {
+        // potentially remove value key and calculate on the fly
+        value: valueIndex <= 8 ? 2 + valueIndex : royalCards[valueIndex - 9] === 'A' ? 11 : 10,
+        name: valueIndex <= 8 ? (2 + valueIndex).toString() : royalCards[valueIndex - 9],
+        suit: suit,
+        // faceUp: true,
+      }
+    })
+  }
+  return suits.flatMap((suit) => createSuitedCards(suit))
+}
+
+// const deck = buildDecks(2)
+
 // dealCard:: -> Card[] -> [Card, Card[]]
 export const dealCard = (deckCards) => {
   const randomIndex = Math.floor(Math.random() * deckCards.length)
@@ -6,7 +28,21 @@ export const dealCard = (deckCards) => {
 }
 
 // console.log('dealCard')
+// const [card, newDeck] = dealCard(deck)
+// console.log(card)
+// console.log(newDeck)
 // console.log(dealCard(Array.from({ length: 100 }, (_, index) => ({ id: index + 1 }))))
+
+// dealOrder :: array -> array -> Card -> [[],[]]
+export const dealOrder = (playerHand, dealerHand, card) => {
+  if (playerHand.length <= dealerHand.length) {
+    return [[...playerHand, card], [...dealerHand]]
+  } else {
+    return [[...playerHand], [...dealerHand, card]]
+  }
+}
+
+// console.log(dealOrder([{ suit: 'Heats', value: 10 }], [{ suit: 'Heats', value: 10 }], { suit: 'Heats', value: 10 }))
 
 // handTotal:: -> Card[] -> Number
 export const handTotal = (hand) => {
@@ -65,28 +101,6 @@ export const checkBust = (hand) => {
 // console.log('checkBust')
 // console.log(checkBust([{ value: 10 }, { value: 10 }]) === false)
 // console.log(checkBust([{ value: 10 }, { value: 10 }, { value: 5 }]) === true)
-
-// buildDecks:: Number -> Card[]
-export const buildDecks = (amount) => {
-  const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
-  const royalCards = ['J', 'Q', 'K', 'A']
-
-  const createSuitedCards = (suit) => {
-    return Array.from({ length: amount * 13 }, (_, index) => {
-      const valueIndex = index % 13
-      return {
-        // potentially remove value key and calculate on the fly
-        value: valueIndex <= 8 ? 2 + valueIndex : royalCards[valueIndex - 9] === 'A' ? 11 : 10,
-        name: valueIndex <= 8 ? (2 + valueIndex).toString() : royalCards[valueIndex - 9],
-        suit: suit,
-        // faceUp: true,
-      }
-    })
-  }
-  return suits.flatMap((suit) => createSuitedCards(suit))
-}
-
-// console.log(buildDecks(2))
 
 export const delay = (duration, fn) => {
   setTimeout(fn, duration)
