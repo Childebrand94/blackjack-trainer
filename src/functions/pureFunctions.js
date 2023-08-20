@@ -1,15 +1,15 @@
-// drawCard:: -> Card[] -> [Card, Card[]]
-const drawCard = (deckCards) => {
+// dealCard:: -> Card[] -> [Card, Card[]]
+export const dealCard = (deckCards) => {
   const randomIndex = Math.floor(Math.random() * deckCards.length)
   const newDeck = [...deckCards.filter((_, index) => index !== randomIndex)]
   return [deckCards[randomIndex], newDeck]
 }
 
-console.log('drawCard')
-console.log(drawCard(Array.from({ length: 100 }, (_, index) => ({ id: index + 1 }))))
+// console.log('dealCard')
+// console.log(dealCard(Array.from({ length: 100 }, (_, index) => ({ id: index + 1 }))))
 
 // handTotal:: -> Card[] -> Number
-const handTotal = (hand) => {
+export const handTotal = (hand) => {
   const sortedHand = [...hand].sort((a, b) => a.value - b.value)
 
   return sortedHand.reduce((acc, card) => {
@@ -23,26 +23,26 @@ const handTotal = (hand) => {
   }, 0)
 }
 
-console.log()
-console.log('handTotal')
-console.log(
-  handTotal([
-    { value: 10, suit: 'hearts' },
-    { value: 3, suit: 'diamonds' },
-  ]) === 13
-)
-console.log(
-  handTotal([
-    { value: 11, suit: 'hearts', name: 'A' },
-    { value: 10, suit: 'diamonds', name: 'Jack' },
-    { value: 5, suit: 'diamonds', name: '5' },
-    { value: 10, suit: 'diamonds', name: '10' },
-    { value: 11, suit: 'diamonds', name: 'A' },
-  ]) === 27
-)
+// console.log()
+// console.log('handTotal')
+// console.log(
+//   handTotal([
+//     { value: 10, suit: 'hearts' },
+//     { value: 3, suit: 'diamonds' },
+//   ]) === 13
+// )
+// console.log(
+//   handTotal([
+//     { value: 11, suit: 'hearts', name: 'A' },
+//     { value: 10, suit: 'diamonds', name: 'Jack' },
+//     { value: 5, suit: 'diamonds', name: '5' },
+//     { value: 10, suit: 'diamonds', name: '10' },
+//     { value: 11, suit: 'diamonds', name: 'A' },
+//   ]) === 27
+// )
 
 // getHandType:: Card[] -> String
-const getHandType = (hand) => {
+export const getHandType = (hand) => {
   if (hand.some((card) => card.value === 'A')) {
     return 'soft'
   } else if (hand[0].value === hand[1].value) {
@@ -51,25 +51,25 @@ const getHandType = (hand) => {
   return 'hard'
 }
 
-console.log()
-console.log('getHandType')
-console.log(getHandType([{ value: 10 }, { value: 'A' }]) === 'soft')
-console.log(getHandType([{ value: 10 }, { value: 10 }]) === 'pairs')
-console.log(getHandType([{ value: 10 }, { value: 5 }]) === 'hard')
+// console.log()
+// console.log('getHandType')
+// console.log(getHandType([{ value: 10 }, { value: 'A' }]) === 'soft')
+// console.log(getHandType([{ value: 10 }, { value: 10 }]) === 'pairs')
+// console.log(getHandType([{ value: 10 }, { value: 5 }]) === 'hard')
 
 // checkBust:: Card[] -> Boolean
-const checkBust = (hand) => {
+export const checkBust = (hand) => {
   return handTotal(hand) > 21
 }
-console.log()
-console.log('checkBust')
-console.log(checkBust([{ value: 10 }, { value: 10 }]) === false)
-console.log(checkBust([{ value: 10 }, { value: 10 }, { value: 5 }]) === true)
+// console.log()
+// console.log('checkBust')
+// console.log(checkBust([{ value: 10 }, { value: 10 }]) === false)
+// console.log(checkBust([{ value: 10 }, { value: 10 }, { value: 5 }]) === true)
 
 // buildDecks:: Number -> Card[]
-const buildDecks = (amount) => {
+export const buildDecks = (amount) => {
   const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
-  const royalCards = ['Jack', 'Queen', 'King', 'A']
+  const royalCards = ['J', 'Q', 'K', 'A']
 
   const createSuitedCards = (suit) => {
     return Array.from({ length: amount * 13 }, (_, index) => {
@@ -88,6 +88,6 @@ const buildDecks = (amount) => {
 
 // console.log(buildDecks(2))
 
-const dealy = (duration, fn) => {
+export const delay = (duration, fn) => {
   setTimeout(fn, duration)
 }
