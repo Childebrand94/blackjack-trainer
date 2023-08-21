@@ -12,35 +12,30 @@ const StrategyTraining = () => {
 
   // const playerCards = []
   // const dealerCards = []
+  useEffect(() => {
+    const newDeck = buildDecks(6)
+    setDeckOfCards((prevItem) => [...prevItem, ...newDeck])
 
-  const deck = buildDecks(1)
-  // setDeckOfCards((prevItem) => [...prevItem, ...deck])
-  // console.log(deckOfCards)
+    const dealStartingCards = (deck, playerCards, dealerCards) => {
+      // base case if player and dealer both have 2 cards
+      if (playerCards.length === 2 && dealerCards.length === 2) {
+        return [playerCards, dealerCards]
+      }
+      // get a random object from deck return object and deck minus that object
+      const [card, newDeckOfCards] = dealCard(deck)
+      // adding cards objects to player and dealer array in player then dealer order
+      const [updatedPlayerCards, updatedDealerCards] = dealOrder(playerCards, dealerCards, card)
 
-  const dealStartingCards = (deck, playerCards, dealerCards) => {
-    // base case if player and dealer both have 2 cards
-    if (playerCards.length === 2 && dealerCards.length === 2) {
-      return [playerCards, dealerCards]
+      // Recursive call with 1 card less from original deck
+      return dealStartingCards(newDeckOfCards, updatedPlayerCards, updatedDealerCards)
     }
-    // get a random object from deck return object and deck minus that object
-    const [card, newDeckOfCards] = dealCard(deck)
-    // adding cards objects to player and dealer array in player then dealer order
-    const [updatedPlayerCards, updatedDealerCards] = dealOrder(playerCards, dealerCards, card)
 
-    // Recursive call with 1 card less from original deck
-    return dealStartingCards(newDeckOfCards, updatedPlayerCards, updatedDealerCards)
-  }
+    // Call the recursive function and store the starting hands
+    const [startingPlayerHand, startingDealerHand] = dealStartingCards(newDeck, playerCards, dealerCards)
 
-  // Call the recursive function and store the starting hands
-  const [startingPlayerHand, startingDealerHand] = dealStartingCards(deck, playerCards, dealerCards)
-
-  console.log(startingDealerHand)
-  console.log(startingPlayerHand)
-  console.log(deck.length)
-
-  setDealerCards((prevItem) => [...prevItem, ...startingDealerHand])
-  setPlayerCards((prevItem) => [...prevItem, ...startingPlayerHand])
-
+    setDealerCards((prevItem) => [...prevItem, ...startingDealerHand])
+    setPlayerCards((prevItem) => [...prevItem, ...startingPlayerHand])
+  }, [])
   const onClick = () => {
     console.log('Click')
   }
