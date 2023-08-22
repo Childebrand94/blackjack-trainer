@@ -6,8 +6,11 @@ const PlayerCards = ({ cards }) => {
         return (
           <img
             key={nanoid()}
-            style={{ bottom: `${index * 20}px`, left: `${index * 35}px` }}
-            className="absolute"
+            style={{
+              bottom: card.double ? `${index * 40}px` : `${index * 20}px`,
+              left: card.double ? `${index * 48}px` : `${index * 35}px`,
+            }}
+            className={`absolute transform ${card.double === true ? 'rotate-90' : ''}`}
             src={`src/assets/Cards/card${card.suit}${card.name}.png`}
           />
         )

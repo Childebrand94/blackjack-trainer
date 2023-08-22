@@ -2,52 +2,93 @@ import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/PlayerCards'
-import { buildDecks, dealCard, dealOrder } from '../functions/pureFunctions'
+import { buildDecks, drawCard, handTotal } from '../functions/pureFunctions'
+import PlayerHandTotal from '../components/PlayerHandTotal'
 
 const StrategyTraining = () => {
+  const actions = {
+    standBy: 'standBy',
+    dealPlayer: 'dealPlayer',
+    dealDealer: 'dealDealer',
+    hit: 'hit',
+    stand: 'stand',
+    split: 'split',
+    double: 'double',
+    insurance: 'insurance',
+    surrender: 'surrender',
+    lock: 'lock',
+  }
+
   const [playerCards, setPlayerCards] = useState([])
   const [dealerCards, setDealerCards] = useState([])
-  const [deckOfCards, setDeckOfCards] = useState([])
+  const [deckOfCards, setDeckOfCards] = useState(buildDecks(6))
+  const [action, setAction] = useState(actions.dealPlayer)
   const dealCardFaceDown = true
 
-  // const playerCards = []
-  // const dealerCards = []
-  useEffect(() => {
-    const newDeck = buildDecks(6)
-    setDeckOfCards((prevItem) => [...prevItem, ...newDeck])
+  const dealPlayerCard = () => {
+    const [card, updatedDeckOfCards] = drawCard(deckOfCards)
+    setPlayerCards((prevItem) => [...prevItem, card])
+    setDeckOfCards([...updatedDeckOfCards])
+  }
+  const dealDealerCard = () => {
+    const [card, updatedDeckOfCards] = drawCard(deckOfCards)
+    setDealerCards((prevItem) => [...prevItem, card])
+    setDeckOfCards([...updatedDeckOfCards])
+  }
 
-    const dealStartingCards = (deck, playerCards, dealerCards) => {
-      // base case if player and dealer both have 2 cards
-      if (playerCards.length === 2 && dealerCards.length === 2) {
-        return [playerCards, dealerCards]
-      }
-      // get a random object from deck return object and deck minus that object
-      const [card, newDeckOfCards] = dealCard(deck)
-      // adding cards objects to player and dealer array in player then dealer order
-      const [updatedPlayerCards, updatedDealerCards] = dealOrder(playerCards, dealerCards, card)
-
-      // Recursive call with 1 card less from original deck
-      return dealStartingCards(newDeckOfCards, updatedPlayerCards, updatedDealerCards)
-    }
-
-    // Call the recursive function and store the starting hands
-    const [startingPlayerHand, startingDealerHand] = dealStartingCards(newDeck, playerCards, dealerCards)
-
-    setDealerCards((prevItem) => [...prevItem, ...startingDealerHand])
-    setPlayerCards((prevItem) => [...prevItem, ...startingPlayerHand])
-  }, [])
   const onClick = () => {
     console.log('Click')
   }
 
   const handleHit = () => {
-    playerCards.push()
+    setAction(actions.hit)
   }
+  const handleDouble = () => {
+    const [card, updatedDeckOfCards] = drawCard(deckOfCards)
+    setPlayerCards((prevItem) => [...prevItem, { ...card, double: true }])
+    setDeckOfCards([...updatedDeckOfCards])
+    setAction(actions.lock)
+  }
+
+  const handleReset = () => {
+    setPlayerCards([])
+    setDealerCards([])
+    setDeckOfCards(buildDecks(6))
+    setAction(actions.dealPlayer)
+  }
+
+  const dealerDraw = () => {}
+
+  useEffect(() => {
+    if (action === action.lock) {
+      dealerDraw
+    } else if (action === actions.dealPlayer) {
+      dealPlayerCard()
+      setAction(actions.dealDealer)
+    } else if (action === actions.dealDealer) {
+      dealDealerCard()
+      if (dealerCards.length < 1) {
+        setAction(actions.dealPlayer)
+      }
+    } else if (action === actions.hit) {
+      dealPlayerCard()
+      setAction(actions.standBy)
+    } else if (action === actions.double) {
+      dealPlayerCard()
+    } else if (action === actions.surrender) {
+      setAction(actions.surrender)
+    } else if (action === actions.insurance) {
+      setAction(actions.insurance)
+    } else if (action === actions.stand) {
+      setAction(actions.stand)
+    }
+  }, [action])
 
   return (
     <div className="grid grid-cols-3 gap-0 grid-rows-2 h-[100vh] bg-green-700">
       <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
       <PlayerCards cards={playerCards} />
+      <PlayerHandTotal total={0} />
 
       <div className="col-start-3 row-start-2 relative">
         <div className="flex items-end flex-col">
@@ -55,7 +96,7 @@ const StrategyTraining = () => {
 
           <Button onClick={onClick} label={'Split'} />
 
-          <Button onClick={onClick} label={'Double'} />
+          <Button onClick={handleDouble} label={'Double'} />
 
           <Button onClick={onClick} label={'Stand'} />
 
@@ -66,7 +107,7 @@ const StrategyTraining = () => {
         <div className="absolute bottom-0 right-0">
           <Button onClick={onClick} label={'Quit'} />
 
-          <Button onClick={onClick} label={'Reset'} />
+          <Button onClick={handleReset} label={'Reset'} />
         </div>
       </div>
     </div>

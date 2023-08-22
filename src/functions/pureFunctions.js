@@ -20,18 +20,18 @@ export const buildDecks = (amount) => {
 
 // const deck = buildDecks(2)
 
-// dealCard:: -> Card[] -> [Card, Card[]]
-export const dealCard = (deckCards) => {
+// drawCard:: -> Card[] -> [Card, Card[]]
+export const drawCard = (deckCards) => {
   const randomIndex = Math.floor(Math.random() * deckCards.length)
   const newDeck = [...deckCards.filter((_, index) => index !== randomIndex)]
   return [deckCards[randomIndex], newDeck]
 }
 
-// console.log('dealCard')
-// const [card, newDeck] = dealCard(deck)
+// console.log('drawCard')
+// const [card, newDeck] = drawCard(deck)
 // console.log(card)
 // console.log(newDeck)
-// console.log(dealCard(Array.from({ length: 100 }, (_, index) => ({ id: index + 1 }))))
+// console.log(drawCard(Array.from({ length: 100 }, (_, index) => ({ id: index + 1 }))))
 
 // dealOrder :: array -> array -> Card -> [[],[]]
 export const dealOrder = (playerHand, dealerHand, card) => {
