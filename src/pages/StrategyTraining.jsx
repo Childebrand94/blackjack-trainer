@@ -4,6 +4,7 @@ import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/PlayerCards'
 import { buildDecks, drawCard, handTotal } from '../functions/pureFunctions'
 import PlayerHandTotal from '../components/PlayerHandTotal'
+import { Link } from 'react-router-dom'
 
 const StrategyTraining = () => {
   const actions = {
@@ -23,7 +24,7 @@ const StrategyTraining = () => {
   const [dealerCards, setDealerCards] = useState([])
   const [deckOfCards, setDeckOfCards] = useState(buildDecks(6))
   const [action, setAction] = useState(actions.dealPlayer)
-  const dealCardFaceDown = true
+  const [dealCardFaceDown, setDealCardFaceDown] = useState(true)
 
   const dealPlayerCard = () => {
     const [card, updatedDeckOfCards] = drawCard(deckOfCards)
@@ -43,26 +44,35 @@ const StrategyTraining = () => {
   const handleHit = () => {
     setAction(actions.hit)
   }
+  const handleSplit = () => {
+    setAction(actions.split)
+  }
+
+  const handleStand = () => {
+    setAction(actions.stand)
+  }
+
   const handleDouble = () => {
     const [card, updatedDeckOfCards] = drawCard(deckOfCards)
     setPlayerCards((prevItem) => [...prevItem, { ...card, double: true }])
     setDeckOfCards([...updatedDeckOfCards])
-    setAction(actions.lock)
+    setAction(actions.standBy)
   }
 
   const handleReset = () => {
     setPlayerCards([])
     setDealerCards([])
     setDeckOfCards(buildDecks(6))
+    setDealCardFaceDown(true)
     setAction(actions.dealPlayer)
   }
 
-  const dealerDraw = () => {}
+  const dealerDraw = () => {
+    setDealCardFaceDown(false)
+  }
 
   useEffect(() => {
-    if (action === action.lock) {
-      dealerDraw
-    } else if (action === actions.dealPlayer) {
+    if (action === actions.dealPlayer) {
       dealPlayerCard()
       setAction(actions.dealDealer)
     } else if (action === actions.dealDealer) {
@@ -80,33 +90,40 @@ const StrategyTraining = () => {
     } else if (action === actions.insurance) {
       setAction(actions.insurance)
     } else if (action === actions.stand) {
-      setAction(actions.stand)
+      dealerDraw()
+    } else if (action === actions.split) {
+      const updatedPlayerCards = playerCards.map((card) => ({
+        ...card,
+        split: true,
+      }))
+      setPlayerCards(updatedPlayerCards)
     }
   }, [action])
 
   return (
     <div className="grid grid-cols-3 gap-0 grid-rows-2 h-[100vh] bg-green-700">
       <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
-      <PlayerCards cards={playerCards} />
-      <PlayerHandTotal total={0} />
+      <PlayerCards cards={playerCards} action={action} />
+      <PlayerHandTotal total={handTotal(playerCards)} />
 
       <div className="col-start-3 row-start-2 relative">
         <div className="flex items-end flex-col">
           <Button onClick={handleHit} label={'Hit'} />
 
-          <Button onClick={onClick} label={'Split'} />
+          <Button onClick={handleSplit} label={'Split'} />
 
           <Button onClick={handleDouble} label={'Double'} />
 
-          <Button onClick={onClick} label={'Stand'} />
+          <Button onClick={handleStand} label={'Stand'} />
 
           <Button onClick={onClick} label={'Insurance'} />
 
           <Button onClick={onClick} label={'Surrender'} />
         </div>
         <div className="absolute bottom-0 right-0">
-          <Button onClick={onClick} label={'Quit'} />
-
+          <Link to="/">
+            <Button onClick={() => {}} label={'Quit'} />
+          </Link>
           <Button onClick={handleReset} label={'Reset'} />
         </div>
       </div>
