@@ -1,30 +1,16 @@
 import { nanoid } from 'nanoid'
 
 const PlayerCards = ({ cards, action }) => {
+  console.log(cards)
   const getImageStyle = (card, index) => {
-    if (card.split) {
-      return {
-        bottom: card.double ? `${index * 40}px` : `${index * 0}px`,
-        left: card.double ? `${index * 48}px` : `${index * 150}px`,
-      }
-    } else {
-      return {
-        bottom: card.double ? `${index * 40}px` : `${index * 20}px`,
-        left: card.double ? `${index * 48}px` : `${index * 35}px`,
-      }
-    }
-  }
-  const split = (cards, action) => {
-    if (action === 'split') {
-      updatedCards = cards.map((card) => {
-        ;[card]
-      })
-      return updatedCards
+    return {
+      bottom: card.double ? `${index * 40}px` : `${index * 20}px`,
+      left: card.double ? `${index * 48}px` : `${index * 35}px`,
     }
   }
 
   return (
-    <div className="col-start-2 row-start-2 relative">
+    <div className="relative w-1/2">
       {cards.map((card, index) => (
         <img
           key={nanoid()}
