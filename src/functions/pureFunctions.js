@@ -46,6 +46,9 @@ export const dealOrder = (playerHand, dealerHand, card) => {
 
 // handTotal:: -> Card[] -> Number
 export const handTotal = (hand) => {
+  if (!hand) {
+    return 0
+  }
   const sortedHand = [...hand].sort((a, b) => a.value - b.value)
 
   return sortedHand.reduce((acc, card) => {
