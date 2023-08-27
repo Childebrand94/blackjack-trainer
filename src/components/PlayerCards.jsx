@@ -1,7 +1,6 @@
 import { nanoid } from 'nanoid'
 
 const PlayerCards = ({ cards, action }) => {
-  console.log(cards)
   const getImageStyle = (card, index) => {
     return {
       bottom: card.double ? `${index * 40}px` : `${index * 20}px`,

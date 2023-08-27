@@ -14,15 +14,17 @@ const StrategyTraining = () => {
     dealDealer: 'dealDealer',
     hit: 'hit',
     split: 'split',
+    stand: 'stand',
     double: 'double',
     insurance: 'insurance',
     surrender: 'surrender',
     checkBust: 'checkBust',
+    checkPlayerFinished: 'checkPlayerFinished',
     dealerTurn: 'dealerTurn',
     dealerTotalCheck: 'dealerTotalCheck',
   }
 
-  const testDeck = Array.from({ length: 20 }, (_, index) => {
+  const testDeck = Array.from({ length: 50 }, (_, index) => {
     return {
       value: 2,
       name: '2',
@@ -32,28 +34,41 @@ const StrategyTraining = () => {
 
   const [playerCards, setPlayerCards] = useState([{ cards: [], finished: false }])
   const [dealerCards, setDealerCards] = useState([])
-  const [deckOfCards, setDeckOfCards] = useState(testDeck)
+  const [deckOfCards, setDeckOfCards] = useState(buildDecks(6))
   const [disableButtons, setDisableButtons] = useState(false)
   const [playerHandTotal, setPlayerHandTotal] = useState(playerCards[0].cards)
   const [action, setAction] = useState(actions.dealPlayer)
   const [dealCardFaceDown, setDealCardFaceDown] = useState(true)
 
-  const dealPlayerCard = () => {
+  const dealPlayerCard = (handIndex = null) => {
     const [card, updatedDeckOfCards] = drawCard(deckOfCards)
     setPlayerCards((prevHands) => {
+      //incase of split, only deal card to the first hand that is not finished
       const targetHandIndex = prevHands.findIndex((hand) => !hand.finished)
       if (targetHandIndex === -1) {
         return prevHands
       }
-      return prevHands.map((hand, index) => {
-        if (index === targetHandIndex) {
-          return {
-            ...hand,
-            cards: [...hand.cards, card],
+      if (!handIndex) {
+        return prevHands.map((hand, index) => {
+          if (index === targetHandIndex) {
+            return {
+              ...hand,
+              cards: [...hand.cards, card],
+            }
           }
-        }
-        return hand
-      })
+          return hand
+        })
+      } else {
+        return prevHands.map((hand, index) => {
+          if (index === handIndex) {
+            return {
+              ...hand,
+              cards: [...hand.cards, card],
+            }
+          }
+          return hand
+        })
+      }
     })
     setDeckOfCards([...updatedDeckOfCards])
   }
@@ -64,17 +79,24 @@ const StrategyTraining = () => {
     setDeckOfCards([...updatedDeckOfCards])
   }
 
-  const splitPlayerHand = () => {}
-
   const handleHit = () => {
     setAction(actions.hit)
   }
   const handleSplit = () => {
     setAction(actions.split)
+    // playerCards.forEach((hand) => {
+    //   hand.cards.every((card) => card.value === card[0].value)
+    // })
+    // if (splitAllowed) {
+    //   setAction(actions.split)
+    // } else {
+    //   console.log('You can only split cards of the same value')
+    //   setAction(actions.standBy)
+    // }
   }
 
   const handleStand = () => {
-    setAction(actions.dealerTurn)
+    setAction(actions.stand)
   }
 
   const handleDouble = () => {
@@ -101,47 +123,59 @@ const StrategyTraining = () => {
     console.log(action)
     if (action === actions.dealPlayer) {
       dealPlayerCard()
+
       setAction(actions.dealDealer)
     } else if (action === actions.dealDealer) {
       dealDealerCard()
       if (dealerCards.length < 1) {
         setAction(actions.dealPlayer)
       }
+    } else if (action === actions.stand) {
+      setPlayerCards((prevItem) => {
+        const handIndex = prevItem.findIndex((hand) => !hand.finished)
+        return prevItem.map((hand, index) => {
+          if (index === handIndex) {
+            return {
+              ...hand,
+              finished: true,
+            }
+          }
+          return { ...hand }
+        })
+      })
+      setAction(actions.checkPlayerFinished)
     } else if (action === actions.hit) {
       dealPlayerCard()
       setAction(actions.checkBust)
     } else if (action === actions.checkBust) {
       setPlayerCards((prevItem) => {
         return prevItem.map((hand) => {
-          return {
-            ...hand,
-            finished: checkBust(hand.cards) ? true : false,
-          }
+          if (!hand.finished) {
+            return {
+              ...hand,
+              finished: checkBust(hand.cards) || handTotal(hand.cars) === 21 ? true : false,
+            }
+          } else return { ...hand }
         })
       })
-
-      if (checkBust(playerCards[0].cards)) {
-        setAction(actions.dealerTurn)
-        // Check if new card gave Blackjack
-      } else if (handTotal(playerCards[0].cards) === 21) {
-        setAction(actions.dealerTurn)
-      } else {
-        setAction(actions.standBy)
-      }
+      setAction(actions.checkPlayerFinished)
     } else if (action === actions.double) {
       const [card, updatedDeckOfCards] = drawCard(deckOfCards)
       setPlayerCards((prevItem) => {
-        return prevItem.map((hand) => {
-          return {
-            ...hand,
-            cards: [...hand.cards, { ...card, double: true }],
-          }
+        const handIndex = prevItem.findIndex((hand) => !hand.finished)
+        return prevItem.map((hand, index) => {
+          if (index === handIndex) {
+            return {
+              ...hand,
+              cards: [...hand.cards, { ...card, double: true }],
+              finished: true,
+            }
+          } else return { ...hand }
         })
       })
       setDeckOfCards([...updatedDeckOfCards])
-      setTimeout(() => {
-        setAction(actions.dealerTurn)
-      }, 400)
+
+      setAction(actions.checkPlayerFinished)
     } else if (action === actions.split) {
       setPlayerCards((prevItem) => {
         return prevItem.flatMap((hand) => {
@@ -150,6 +184,19 @@ const StrategyTraining = () => {
           })
         })
       })
+      setTimeout(() => {
+        dealPlayerCard(0)
+      }, 300)
+      setTimeout(() => {
+        dealPlayerCard(1)
+      }, 300)
+    } else if (action === actions.checkPlayerFinished) {
+      const allPlayerHandsFinished = playerCards.every((hand) => hand.finished)
+      if (allPlayerHandsFinished) {
+        setAction(actions.dealerTurn)
+      } else {
+        setAction(actions.standBy)
+      }
     } else if (action === actions.dealerTurn) {
       setDealCardFaceDown(false)
       setDisableButtons(true)
@@ -172,7 +219,6 @@ const StrategyTraining = () => {
     setPlayerHandTotal(handTotal(playerCards[0].cards))
   }, [action])
 
-  console.log(playerCards)
   return (
     <div className="grid grid-cols-3 gap-0 grid-rows-2 h-[100vh] bg-green-700">
       <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
