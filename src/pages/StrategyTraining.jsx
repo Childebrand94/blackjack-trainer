@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
-import PlayerCards from '../components/PlayerCards'
+import PlayerCards from '../components/playerCards'
 import { buildDecks, checkBust, delay, drawCard, handTotal } from '../functions/pureFunctions'
 import PlayerHandTotal from '../components/PlayerHandTotal'
 import { Link } from 'react-router-dom'
@@ -22,6 +22,7 @@ const StrategyTraining = () => {
     checkPlayerFinished: 'checkPlayerFinished',
     dealerTurn: 'dealerTurn',
     dealerTotalCheck: 'dealerTotalCheck',
+    setActiveHand: 'setActiveHand',
   }
 
   const testDeck = Array.from({ length: 50 }, (_, index) => {
@@ -32,17 +33,18 @@ const StrategyTraining = () => {
     }
   })
 
-  const [playerCards, setPlayerCards] = useState([{ cards: [], finished: false }])
+  const [playerHands, setPlayerHands] = useState([{ cards: [], finished: false, active: true }])
   const [dealerCards, setDealerCards] = useState([])
-  const [deckOfCards, setDeckOfCards] = useState(buildDecks(6))
+  const [deckOfCards, setDeckOfCards] = useState(testDeck)
   const [disableButtons, setDisableButtons] = useState(false)
-  const [playerHandTotal, setPlayerHandTotal] = useState(playerCards[0].cards)
+  const [playerHandTotal, setPlayerHandTotal] = useState(playerHands[0].cards)
   const [action, setAction] = useState(actions.dealPlayer)
   const [dealCardFaceDown, setDealCardFaceDown] = useState(true)
+  const [activeHandIndex, setActiveHandIndex] = useState(0)
 
   const dealPlayerCard = (handIndex = null) => {
     const [card, updatedDeckOfCards] = drawCard(deckOfCards)
-    setPlayerCards((prevHands) => {
+    setPlayerHands((prevHands) => {
       //incase of split, only deal card to the first hand that is not finished
       const targetHandIndex = prevHands.findIndex((hand) => !hand.finished)
       if (targetHandIndex === -1) {
@@ -84,15 +86,6 @@ const StrategyTraining = () => {
   }
   const handleSplit = () => {
     setAction(actions.split)
-    // playerCards.forEach((hand) => {
-    //   hand.cards.every((card) => card.value === card[0].value)
-    // })
-    // if (splitAllowed) {
-    //   setAction(actions.split)
-    // } else {
-    //   console.log('You can only split cards of the same value')
-    //   setAction(actions.standBy)
-    // }
   }
 
   const handleStand = () => {
@@ -104,7 +97,7 @@ const StrategyTraining = () => {
   }
 
   const handleReset = () => {
-    setPlayerCards([{ cards: [], finished: false }])
+    setPlayerHands([{ cards: [], finished: false, active: true }])
     setDealerCards([])
     setDeckOfCards(testDeck)
     setDealCardFaceDown(true)
@@ -113,7 +106,7 @@ const StrategyTraining = () => {
   }
 
   const nextRound = () => {
-    setPlayerCards([{ cards: [], finished: false }])
+    setPlayerHands([{ cards: [], finished: false }])
     setDealerCards([])
     setDealCardFaceDown(true)
     setAction(actions.dealPlayer)
@@ -131,7 +124,7 @@ const StrategyTraining = () => {
         setAction(actions.dealPlayer)
       }
     } else if (action === actions.stand) {
-      setPlayerCards((prevItem) => {
+      setPlayerHands((prevItem) => {
         const handIndex = prevItem.findIndex((hand) => !hand.finished)
         return prevItem.map((hand, index) => {
           if (index === handIndex) {
@@ -148,7 +141,7 @@ const StrategyTraining = () => {
       dealPlayerCard()
       setAction(actions.checkBust)
     } else if (action === actions.checkBust) {
-      setPlayerCards((prevItem) => {
+      setPlayerHands((prevItem) => {
         return prevItem.map((hand) => {
           if (!hand.finished) {
             return {
@@ -161,7 +154,7 @@ const StrategyTraining = () => {
       setAction(actions.checkPlayerFinished)
     } else if (action === actions.double) {
       const [card, updatedDeckOfCards] = drawCard(deckOfCards)
-      setPlayerCards((prevItem) => {
+      setPlayerHands((prevItem) => {
         const handIndex = prevItem.findIndex((hand) => !hand.finished)
         return prevItem.map((hand, index) => {
           if (index === handIndex) {
@@ -177,21 +170,29 @@ const StrategyTraining = () => {
 
       setAction(actions.checkPlayerFinished)
     } else if (action === actions.split) {
-      setPlayerCards((prevItem) => {
+      setPlayerHands((prevItem) => {
         return prevItem.flatMap((hand) => {
-          return hand.cards.map((card) => {
-            return { ...hand, cards: [card] }
-          })
+          if (hand.active) {
+            return hand.cards.map((card, index) => {
+              if (index === hand.cards.length - 1) {
+                return { ...hand, cards: [card], active: false }
+              } else {
+                return { ...hand, cards: [card] }
+              }
+            })
+          } else return { ...hand }
         })
       })
-      setTimeout(() => {
-        dealPlayerCard(0)
-      }, 300)
-      setTimeout(() => {
-        dealPlayerCard(1)
-      }, 300)
+      playerHands.forEach((_, index) => {
+        setTimeout(() => {
+          dealPlayerCard(index)
+        }, 300)
+      })
+
+      setAction(actions.standBy)
+    } else if (action === actions.setActiveHand) {
     } else if (action === actions.checkPlayerFinished) {
-      const allPlayerHandsFinished = playerCards.every((hand) => hand.finished)
+      const allPlayerHandsFinished = playerHands.every((hand) => hand.finished)
       if (allPlayerHandsFinished) {
         setAction(actions.dealerTurn)
       } else {
@@ -216,14 +217,14 @@ const StrategyTraining = () => {
     } else if (action === actions.insurance) {
       setAction(actions.insurance)
     }
-    setPlayerHandTotal(handTotal(playerCards[0].cards))
+    setPlayerHandTotal(handTotal(playerHands[0].cards))
   }, [action])
 
   return (
     <div className="grid grid-cols-3 gap-0 grid-rows-2 h-[100vh] bg-green-700">
       <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
       <div className="col-start-2 row-start-2 flex space-x-10">
-        {playerCards.map((hand) => {
+        {playerHands.map((hand) => {
           return <PlayerCards key={nanoid()} cards={hand.cards} action={action} />
         })}
       </div>
