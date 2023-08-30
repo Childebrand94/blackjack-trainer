@@ -6,6 +6,8 @@ import { buildDecks, checkBust, delay, drawCard, handTotal } from '../functions/
 import PlayerHandTotal from '../components/PlayerHandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
+import Insurance from '../components/Insurance'
+import BlackJack from '../components/BlackJack'
 
 const StrategyTraining = () => {
   const actions = {
@@ -14,21 +16,25 @@ const StrategyTraining = () => {
     dealDealer: 'dealDealer',
     hit: 'hit',
     split: 'split',
+    dealSplitHand: 'dealSplitHand',
     stand: 'stand',
     double: 'double',
-    insurance: 'insurance',
+    checkInsurance: 'checkInsurance',
     surrender: 'surrender',
     checkBust: 'checkBust',
     checkDealerTurn: 'checkDealerTurn',
+    checkBlackjack: 'checkBlackjack',
     dealerTurn: 'dealerTurn',
     dealerTotalCheck: 'dealerTotalCheck',
     setActiveHand: 'setActiveHand',
+    insuranceAccepted: 'insuranceAccepted',
+    insuranceDeclined: 'insuranceDeclined',
   }
 
-  const testDeck = Array.from({ length: 50 }, (_, index) => {
+  const testDeck = Array.from({ length: 50 }, (_) => {
     return {
-      value: 2,
-      name: '2',
+      value: 11,
+      name: 'A',
       suit: 'Hearts',
     }
   })
@@ -39,14 +45,17 @@ const StrategyTraining = () => {
   const [disableButtons, setDisableButtons] = useState(false)
   const [action, setAction] = useState(actions.dealPlayer)
   const [dealCardFaceDown, setDealCardFaceDown] = useState(true)
+  const [insuranceDisplayed, setInsuranceDisplay] = useState(false)
+  const [DisplayBlackJack, setDisplayBlackJack] = useState(false)
   const [activeHandIndex, setActiveHandIndex] = useState(0)
 
   const dealPlayerCard = () => {
     const [card, updatedDeckOfCards] = drawCard(deckOfCards)
-    //refactor to be pure at some point
+    // refactor to be pure at some point
     setPlayerHands((prevHands) => {
-      prevHands[activeHandIndex] = [...prevHands[activeHandIndex], card]
-      return prevHands
+      const newHands = [...prevHands]
+      newHands[activeHandIndex] = [...newHands[activeHandIndex], card]
+      return newHands
     })
     setDeckOfCards([...updatedDeckOfCards])
   }
@@ -61,7 +70,9 @@ const StrategyTraining = () => {
     setAction(actions.hit)
   }
   const handleSplit = () => {
-    setAction(actions.split)
+    if (playerHands[activeHandIndex][0].name === playerHands[activeHandIndex][1].name) {
+      setAction(actions.split)
+    }
   }
 
   const handleStand = () => {
@@ -72,18 +83,28 @@ const StrategyTraining = () => {
     setAction(actions.double)
   }
 
+  const handleInsuranceAccepted = () => {
+    setAction(actions.insuranceAccepted)
+    setInsuranceDisplay(false)
+  }
+  const handleInsuranceDeclined = () => {
+    setAction(actions.insuranceDeclined)
+    setInsuranceDisplay(false)
+  }
+
   const handleReset = () => {
     setActiveHandIndex(0)
     setPlayerHands([[]])
     setDealerCards([])
-    setDeckOfCards(testDeck)
+    setDeckOfCards(buildDecks(6))
     setDealCardFaceDown(true)
     setDisableButtons(false)
+    setInsuranceDisplay(false)
     setAction(actions.dealPlayer)
   }
 
   const nextRound = () => {
-    setPlayerHands([{ cards: [], finished: false }])
+    setPlayerHands([])
     setDealerCards([])
     setDealCardFaceDown(true)
     setAction(actions.dealPlayer)
@@ -99,7 +120,23 @@ const StrategyTraining = () => {
       dealDealerCard()
       if (dealerCards.length < 1) {
         setAction(actions.dealPlayer)
+      } else {
+        setAction(actions.checkInsurance)
       }
+    } else if (action === actions.checkInsurance) {
+      if (dealerCards[1].name === 'A') {
+        setInsuranceDisplay(true)
+      }
+      setAction(actions.checkBlackjack)
+    } else if (action === actions.checkBlackjack) {
+      if (handTotal(playerHands[activeHandIndex]) === 21) {
+        setDisplayBlackJack(true)
+        setTimeout(() => {
+          setDisplayBlackJack(false)
+        }, 1000)
+        setActiveHandIndex((prevIndex) => prevIndex + 1)
+      }
+      setAction(actions.checkDealerTurn)
     } else if (action === actions.stand) {
       setActiveHandIndex((prevItem) => prevItem + 1)
       setAction(actions.checkDealerTurn)
@@ -129,6 +166,8 @@ const StrategyTraining = () => {
         return prevHands
       })
       setDeckOfCards([...updatedDeckOfCards])
+      setActiveHandIndex((prevIndex) => prevIndex + 1)
+      setAction(actions.checkDealerTurn)
     } else if (action === actions.split) {
       setPlayerHands((prevHands) => {
         return prevHands.flatMap((hand, index) => {
@@ -139,11 +178,20 @@ const StrategyTraining = () => {
         })
       })
 
+      setTimeout(() => {
+        dealPlayerCard()
+      }, 300)
+
       setAction(actions.standBy)
-    } else if (action === actions.setActiveHand) {
     } else if (action === actions.checkDealerTurn) {
       if (activeHandIndex >= playerHands.length) {
         setAction(actions.dealerTurn)
+      } else if (handTotal(dealerCards) === 21) {
+        setAction(actions.dealerTurn)
+      } else if (playerHands[activeHandIndex].length < 2) {
+        setTimeout(() => {
+          dealPlayerCard()
+        }, 300)
       } else {
         setAction(actions.standBy)
       }
@@ -163,14 +211,13 @@ const StrategyTraining = () => {
       }
     } else if (action === actions.surrender) {
       setAction(actions.surrender)
-    } else if (action === actions.insurance) {
-      setAction(actions.insurance)
     }
   }, [action])
 
   return (
-    <div className="grid grid-cols-3 gap-0 grid-rows-2 h-[100vh] bg-green-700">
+    <div className="grid grid-cols-3 gap-0 grid-rows-2 h-[100vh] bg-green-700 relative">
       <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
+
       <div className="col-start-2 row-start-2 flex space-x-10">
         {playerHands.map((hand) => {
           return <PlayerCards key={nanoid()} cards={hand} action={action} />
@@ -178,6 +225,13 @@ const StrategyTraining = () => {
       </div>
       <PlayerHandTotal total={handTotal(playerHands[activeHandIndex])} />
 
+      {insuranceDisplayed && (
+        <Insurance
+          handleInsuranceDeclined={handleInsuranceDeclined}
+          handleInsuranceAccepted={handleInsuranceAccepted}
+        />
+      )}
+      {DisplayBlackJack && <BlackJack />}
       <div className="col-start-3 row-start-2 relative">
         <div className="flex items-end flex-col">
           <Button onClick={handleHit} label={'Hit'} disabled={disableButtons} />
@@ -187,8 +241,6 @@ const StrategyTraining = () => {
           <Button onClick={handleDouble} label={'Double'} disabled={disableButtons} />
 
           <Button onClick={handleStand} label={'Stand'} disabled={disableButtons} />
-
-          <Button label={'Insurance'} />
 
           <Button onClick={() => {}} label={'Surrender'} />
         </div>
