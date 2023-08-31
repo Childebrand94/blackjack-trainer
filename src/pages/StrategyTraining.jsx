@@ -23,7 +23,7 @@ const StrategyTraining = () => {
     surrender: 'surrender',
     checkBust: 'checkBust',
     checkDealerTurn: 'checkDealerTurn',
-    checkBlackjack: 'checkBlackjack',
+    checkPlayerBlackjack: 'checkPlayerBlackjack',
     dealerTurn: 'dealerTurn',
     dealerTotalCheck: 'dealerTotalCheck',
     setActiveHand: 'setActiveHand',
@@ -41,7 +41,7 @@ const StrategyTraining = () => {
 
   const [playerHands, setPlayerHands] = useState([[]])
   const [dealerCards, setDealerCards] = useState([])
-  const [deckOfCards, setDeckOfCards] = useState(testDeck)
+  const [deckOfCards, setDeckOfCards] = useState(buildDecks(2))
   const [disableButtons, setDisableButtons] = useState(false)
   const [action, setAction] = useState(actions.dealPlayer)
   const [dealCardFaceDown, setDealCardFaceDown] = useState(true)
@@ -126,10 +126,16 @@ const StrategyTraining = () => {
     } else if (action === actions.checkInsurance) {
       if (dealerCards[1].name === 'A') {
         setInsuranceDisplay(true)
+      } else {
+        setAction(actions.checkPlayerBlackjack)
       }
-      setAction(actions.checkBlackjack)
-    } else if (action === actions.checkBlackjack) {
+    } else if (actions === actions.insuranceAccepted) {
+      setAction(actions.checkPlayerBlackjack)
+    } else if (actions === actions.insuranceDeclined) {
+      setAction(actions.checkPlayerBlackjack)
+    } else if (action === actions.checkPlayerBlackjack) {
       if (handTotal(playerHands[activeHandIndex]) === 21) {
+        // show Blackjack pop up for 1 second
         setDisplayBlackJack(true)
         setTimeout(() => {
           setDisplayBlackJack(false)
@@ -137,6 +143,42 @@ const StrategyTraining = () => {
         setActiveHandIndex((prevIndex) => prevIndex + 1)
       }
       setAction(actions.checkDealerTurn)
+    } else if (action === actions.checkDealerTurn) {
+      // if active index is greater than player hands length check dealer total
+      if (activeHandIndex >= playerHands.length) {
+        setAction(actions.dealerTotalCheck)
+        // player has 21 set dealer turn
+      } else if (handTotal(playerHands[activeHandIndex]) === 21) {
+        setTimeout(() => {
+          setAction(actions.dealerTurn)
+        }, 300)
+        // if player has 21 check dealer total delay for Blackjack pop up
+      } else if (handTotal(dealerCards) === 21) {
+        setTimeout(() => {
+          setAction(actions.dealerTotalCheck)
+        }, 300)
+        // if player has split and the additional hand has 1 card deal a card
+      } else if (playerHands[activeHandIndex].length < 2) {
+        setTimeout(() => {
+          dealPlayerCard()
+        }, 300)
+      } else {
+        setAction(actions.standBy)
+      }
+    } else if (action === actions.dealerTotalCheck) {
+      // dealer draws
+      if (handTotal(dealerCards) < 17) {
+        setAction(actions.dealerTurn)
+        // dealer stands
+      } else if (handTotal(dealerCards) >= 17 && handTotal(dealerCards) <= 21) {
+        setDealCardFaceDown(false)
+        setAction(actions.standBy)
+        // dealer has busted
+      } else if (handTotal(dealerCards) > 21) {
+        console.log('Bust')
+      } else {
+        console.log('End')
+      }
     } else if (action === actions.stand) {
       setActiveHandIndex((prevItem) => prevItem + 1)
       setAction(actions.checkDealerTurn)
@@ -148,17 +190,6 @@ const StrategyTraining = () => {
         setActiveHandIndex((prevItem) => prevItem + 1)
       }
       setAction(actions.checkDealerTurn)
-
-      // setPlayerHands((prevItem) => {
-      //   return prevItem.map((hand) => {
-      //     if (!hand.finished) {
-      //       return {
-      //         ...hand,
-      //         finished: checkBust(hand.cards) || handTotal(hand.cars) === 21 ? true : false,
-      //       }
-      //     } else return { ...hand }
-      //   })
-      // })
     } else if (action === actions.double) {
       const [card, updatedDeckOfCards] = drawCard(deckOfCards)
       setPlayerHands((prevHands) => {
@@ -183,18 +214,6 @@ const StrategyTraining = () => {
       }, 300)
 
       setAction(actions.standBy)
-    } else if (action === actions.checkDealerTurn) {
-      if (activeHandIndex >= playerHands.length) {
-        setAction(actions.dealerTurn)
-      } else if (handTotal(dealerCards) === 21) {
-        setAction(actions.dealerTurn)
-      } else if (playerHands[activeHandIndex].length < 2) {
-        setTimeout(() => {
-          dealPlayerCard()
-        }, 300)
-      } else {
-        setAction(actions.standBy)
-      }
     } else if (action === actions.dealerTurn) {
       setDealCardFaceDown(false)
       setDisableButtons(true)
@@ -202,13 +221,6 @@ const StrategyTraining = () => {
         dealDealerCard()
         setAction(actions.dealerTotalCheck)
       }, 1000)
-    } else if (action === actions.dealerTotalCheck) {
-      if (handTotal(dealerCards) < 17) {
-        console.log(handTotal(dealerCards))
-        setAction(actions.dealerTurn)
-      } else {
-        console.log('End')
-      }
     } else if (action === actions.surrender) {
       setAction(actions.surrender)
     }
@@ -223,7 +235,13 @@ const StrategyTraining = () => {
           return <PlayerCards key={nanoid()} cards={hand} action={action} />
         })}
       </div>
-      <PlayerHandTotal total={handTotal(playerHands[activeHandIndex])} />
+      <div className="col-start-1 row-start-2 relative">
+        <PlayerHandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />
+      </div>
+
+      <div className="col-start-1 row-start-1 relative">
+        <PlayerHandTotal total={handTotal(dealerCards)} />
+      </div>
 
       {insuranceDisplayed && (
         <Insurance
