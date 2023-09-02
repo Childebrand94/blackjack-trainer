@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/playerCards'
-import { buildDecks, checkBust, delay, drawCard, handTotal } from '../functions/pureFunctions'
+import { buildDecks, buildStackedDeck1, checkBust, delay, drawCard, handTotal } from '../functions/pureFunctions'
 import PlayerHandTotal from '../components/PlayerHandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 import Insurance from '../components/Insurance'
 import BlackJack from '../components/BlackJack'
+import { set } from 'ramda'
+
+const testing = true
 
 const StrategyTraining = () => {
   const actions = {
@@ -16,19 +19,19 @@ const StrategyTraining = () => {
     dealDealer: 'dealDealer',
     hit: 'hit',
     split: 'split',
-    dealSplitHand: 'dealSplitHand',
     stand: 'stand',
     double: 'double',
     checkInsurance: 'checkInsurance',
+    dealSplitHand: 'dealSplitHand',
     surrender: 'surrender',
     checkBust: 'checkBust',
     checkDealerTurn: 'checkDealerTurn',
-    checkPlayerBlackjack: 'checkPlayerBlackjack',
+    checkBlackjack: 'checkBlackjack',
     dealerTurn: 'dealerTurn',
     dealerTotalCheck: 'dealerTotalCheck',
-    setActiveHand: 'setActiveHand',
     insuranceAccepted: 'insuranceAccepted',
     insuranceDeclined: 'insuranceDeclined',
+    startNextRound: 'startNextRound',
   }
 
   const testDeck = Array.from({ length: 50 }, (_) => {
@@ -39,18 +42,29 @@ const StrategyTraining = () => {
     }
   })
 
-  const [playerHands, setPlayerHands] = useState([[]])
-  const [dealerCards, setDealerCards] = useState([])
-  const [deckOfCards, setDeckOfCards] = useState(buildDecks(2))
-  const [disableButtons, setDisableButtons] = useState(false)
-  const [action, setAction] = useState(actions.dealPlayer)
-  const [dealCardFaceDown, setDealCardFaceDown] = useState(true)
-  const [insuranceDisplayed, setInsuranceDisplay] = useState(false)
-  const [DisplayBlackJack, setDisplayBlackJack] = useState(false)
-  const [activeHandIndex, setActiveHandIndex] = useState(0)
+  const initialPlayerHand = [[]]
+  const initialDealerHand = []
+  const initialDeck = buildDecks(6)
+  const initialTestingDeck = buildStackedDeck1(100)
+  const initialButton = false
+  const initialAction = actions.dealPlayer
+  const initialDealerCardFaceDown = true
+  const initialInsuranceDisplay = false
+  const initialBlackjackDisplay = false
+  const initialPlayerHandIndex = 0
+
+  const [playerHands, setPlayerHands] = useState(initialPlayerHand)
+  const [dealerCards, setDealerCards] = useState(initialDealerHand)
+  const [deckOfCards, setDeckOfCards] = useState(testing ? initialTestingDeck : initialDeck)
+  const [disableButtons, setDisableButtons] = useState(initialButton)
+  const [action, setAction] = useState(initialAction)
+  const [dealCardFaceDown, setDealCardFaceDown] = useState(initialDealerCardFaceDown)
+  const [insuranceDisplayed, setInsuranceDisplay] = useState(initialInsuranceDisplay)
+  const [DisplayBlackJack, setDisplayBlackJack] = useState(initialBlackjackDisplay)
+  const [activeHandIndex, setActiveHandIndex] = useState(initialPlayerHandIndex)
 
   const dealPlayerCard = () => {
-    const [card, updatedDeckOfCards] = drawCard(deckOfCards)
+    const [card, updatedDeckOfCards] = drawCard(deckOfCards, testing)
     // refactor to be pure at some point
     setPlayerHands((prevHands) => {
       const newHands = [...prevHands]
@@ -61,7 +75,7 @@ const StrategyTraining = () => {
   }
 
   const dealDealerCard = () => {
-    const [card, updatedDeckOfCards] = drawCard(deckOfCards)
+    const [card, updatedDeckOfCards] = drawCard(deckOfCards, testing)
     setDealerCards((prevItem) => [...prevItem, card])
     setDeckOfCards([...updatedDeckOfCards])
   }
@@ -93,21 +107,23 @@ const StrategyTraining = () => {
   }
 
   const handleReset = () => {
-    setActiveHandIndex(0)
-    setPlayerHands([[]])
-    setDealerCards([])
-    setDeckOfCards(buildDecks(6))
-    setDealCardFaceDown(true)
-    setDisableButtons(false)
-    setInsuranceDisplay(false)
-    setAction(actions.dealPlayer)
+    setActiveHandIndex(initialPlayerHandIndex)
+    setPlayerHands(initialPlayerHand)
+    setDealerCards(initialDealerHand)
+    setDeckOfCards(testing ? initialTestingDeck : initialDeck)
+    setDealCardFaceDown(initialDealerCardFaceDown)
+    setDisableButtons(initialButton)
+    setInsuranceDisplay(initialInsuranceDisplay)
+    setAction(initialAction)
   }
 
   const nextRound = () => {
-    setPlayerHands([])
-    setDealerCards([])
-    setDealCardFaceDown(true)
-    setAction(actions.dealPlayer)
+    setActiveHandIndex(initialPlayerHandIndex)
+    setPlayerHands(initialPlayerHand)
+    setDealerCards(initialDealerHand)
+    setDealCardFaceDown(initialDealerCardFaceDown)
+    setAction(initialAction)
+    setDisableButtons(initialButton)
   }
 
   useEffect(() => {
@@ -127,13 +143,26 @@ const StrategyTraining = () => {
       if (dealerCards[1].name === 'A') {
         setInsuranceDisplay(true)
       } else {
-        setAction(actions.checkPlayerBlackjack)
+        setAction(actions.checkBlackjack)
       }
-    } else if (actions === actions.insuranceAccepted) {
-      setAction(actions.checkPlayerBlackjack)
-    } else if (actions === actions.insuranceDeclined) {
-      setAction(actions.checkPlayerBlackjack)
-    } else if (action === actions.checkPlayerBlackjack) {
+    } else if (action === actions.insuranceAccepted) {
+      if (handTotal(dealerCards) === 21) {
+        setDealCardFaceDown(false)
+        setTimeout(() => {
+          setAction(actions.startNextRound)
+        }, 2000)
+      }
+      setAction(actions.checkBlackjack)
+    } else if (action === actions.insuranceDeclined) {
+      console.log(handTotal(dealerCards))
+      if (handTotal(dealerCards) === 21) {
+        setDealCardFaceDown(false)
+        setTimeout(() => {
+          setAction(actions.startNextRound)
+        }, 2000)
+      }
+      setAction(actions.checkBlackjack)
+    } else if (action === actions.checkBlackjack) {
       if (handTotal(playerHands[activeHandIndex]) === 21) {
         // show Blackjack pop up for 1 second
         setDisplayBlackJack(true)
@@ -143,6 +172,14 @@ const StrategyTraining = () => {
         setActiveHandIndex((prevIndex) => prevIndex + 1)
       }
       setAction(actions.checkDealerTurn)
+    } else if (action === actions.dealSplitHand) {
+      if (activeHandIndex >= playerHands.length) {
+        setAction(actions.dealerTotalCheck)
+      } else if (playerHands[activeHandIndex].length < 2) {
+        setTimeout(() => {
+          dealPlayerCard()
+        }, 300)
+      }
     } else if (action === actions.checkDealerTurn) {
       // if active index is greater than player hands length check dealer total
       if (activeHandIndex >= playerHands.length) {
@@ -157,11 +194,6 @@ const StrategyTraining = () => {
         setTimeout(() => {
           setAction(actions.dealerTotalCheck)
         }, 300)
-        // if player has split and the additional hand has 1 card deal a card
-      } else if (playerHands[activeHandIndex].length < 2) {
-        setTimeout(() => {
-          dealPlayerCard()
-        }, 300)
       } else {
         setAction(actions.standBy)
       }
@@ -172,16 +204,21 @@ const StrategyTraining = () => {
         // dealer stands
       } else if (handTotal(dealerCards) >= 17 && handTotal(dealerCards) <= 21) {
         setDealCardFaceDown(false)
-        setAction(actions.standBy)
+        setTimeout(() => {
+          setAction(actions.startNextRound)
+        }, 2000)
         // dealer has busted
       } else if (handTotal(dealerCards) > 21) {
         console.log('Bust')
+        setTimeout(() => {
+          setAction(actions.startNextRound)
+        }, 2000)
       } else {
         console.log('End')
       }
     } else if (action === actions.stand) {
       setActiveHandIndex((prevItem) => prevItem + 1)
-      setAction(actions.checkDealerTurn)
+      setAction(actions.dealSplitHand)
     } else if (action === actions.hit) {
       dealPlayerCard()
       setAction(actions.checkBust)
@@ -189,7 +226,7 @@ const StrategyTraining = () => {
       if (checkBust(playerHands[activeHandIndex])) {
         setActiveHandIndex((prevItem) => prevItem + 1)
       }
-      setAction(actions.checkDealerTurn)
+      setAction(actions.dealSplitHand)
     } else if (action === actions.double) {
       const [card, updatedDeckOfCards] = drawCard(deckOfCards)
       setPlayerHands((prevHands) => {
@@ -198,7 +235,7 @@ const StrategyTraining = () => {
       })
       setDeckOfCards([...updatedDeckOfCards])
       setActiveHandIndex((prevIndex) => prevIndex + 1)
-      setAction(actions.checkDealerTurn)
+      setAction(actions.dealSplitHand)
     } else if (action === actions.split) {
       setPlayerHands((prevHands) => {
         return prevHands.flatMap((hand, index) => {
@@ -214,6 +251,8 @@ const StrategyTraining = () => {
       }, 300)
 
       setAction(actions.standBy)
+    } else if (action === actions.startNextRound) {
+      nextRound()
     } else if (action === actions.dealerTurn) {
       setDealCardFaceDown(false)
       setDisableButtons(true)

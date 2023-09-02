@@ -17,14 +17,50 @@ export const buildDecks = (amount) => {
   }
   return suits.flatMap((suit) => createSuitedCards(suit))
 }
+const testDeck = Array.from({ length: 50 }, (_) => {
+  return {
+    value: 11,
+    name: 'A',
+    suit: 'Hearts',
+  }
+})
 
+export const buildStackedDeck1 = (amount) => {
+  const suits = ['Spades']
+
+  const createSuitedCards = (suit) => {
+    return Array.from({ length: amount / 2 }, (_, index) => {
+      if (index % 2 === 0) {
+        // dealers hand
+        return [
+          { name: 'A', value: 11, suit: 'Spades' },
+          { name: 10, value: 10, suit: 'Spades' },
+        ]
+      } else {
+        // players hand
+        return [
+          { name: 5, value: 5, suit: 'Spades' },
+          { name: 'A', value: 11, suit: 'Spades' },
+        ]
+      }
+    }).flat()
+  }
+  return suits.flatMap((suit) => createSuitedCards(suit))
+}
+
+console.log(buildStackedDeck1(10))
 // const deck = buildDecks(2)
 
 // drawCard:: -> Card[] -> [Card, Card[]]
-export const drawCard = (deckCards) => {
-  const randomIndex = Math.floor(Math.random() * deckCards.length)
-  const newDeck = [...deckCards.filter((_, index) => index !== randomIndex)]
-  return [deckCards[randomIndex], newDeck]
+export const drawCard = (deckCards, stackedDeck = false) => {
+  if (!stackedDeck) {
+    const randomIndex = Math.floor(Math.random() * deckCards.length)
+    const newDeck = [...deckCards.filter((_, index) => index !== randomIndex)]
+    return [deckCards[randomIndex], newDeck]
+  } else {
+    const newDeck = [...deckCards.filter((_, index) => index !== 0)]
+    return [deckCards[0], newDeck]
+  }
 }
 
 // console.log('drawCard')
