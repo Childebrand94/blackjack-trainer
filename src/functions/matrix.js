@@ -1,7 +1,7 @@
 // Aces will be represented as 11 in the matrix to keep argument types for check strategy
 // consistent
 
-const decisionMatrix = {
+export const decisionMatrix = {
   // hand type
   hard: {
     // dear up card
@@ -186,7 +186,7 @@ const decisionMatrix = {
 }
 
 // checkStrategy :: String -> Int -> Int -> String
-const strategyCheck = (handType, dealerCardTotal, playerCardTotal) => {
+export const strategyCheck = (handType, dealerCardTotal, playerCardTotal) => {
   // get player options as list
   const playerCardRanges = Object.keys(decisionMatrix[handType][dealerCardTotal])
 

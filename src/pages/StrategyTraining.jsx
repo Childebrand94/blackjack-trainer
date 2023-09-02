@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/playerCards'
-import { buildDecks, buildStackedDeck1, checkBust, delay, drawCard, handTotal } from '../functions/pureFunctions'
+import { buildDecks, buildStackedDeck1, checkBust, drawCard, handTotal } from '../functions/pureFunctions'
 import PlayerHandTotal from '../components/PlayerHandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 import Insurance from '../components/Insurance'
 import BlackJack from '../components/BlackJack'
-import { set } from 'ramda'
+import { decisionMatrix, strategyCheck } from '../functions/matrix'
 
-const testing = true
+const testing = false
 
 const StrategyTraining = () => {
   const actions = {
@@ -140,12 +140,14 @@ const StrategyTraining = () => {
         setAction(actions.checkInsurance)
       }
     } else if (action === actions.checkInsurance) {
+      // dealer faceup card is an A show insurance display
       if (dealerCards[1].name === 'A') {
         setInsuranceDisplay(true)
       } else {
         setAction(actions.checkBlackjack)
       }
     } else if (action === actions.insuranceAccepted) {
+      // if dealer shows an A and has 21 start next round
       if (handTotal(dealerCards) === 21) {
         setDealCardFaceDown(false)
         setTimeout(() => {
@@ -154,7 +156,7 @@ const StrategyTraining = () => {
       }
       setAction(actions.checkBlackjack)
     } else if (action === actions.insuranceDeclined) {
-      console.log(handTotal(dealerCards))
+      // if dealer shows an A and has 21 start next round
       if (handTotal(dealerCards) === 21) {
         setDealCardFaceDown(false)
         setTimeout(() => {
@@ -173,6 +175,7 @@ const StrategyTraining = () => {
       }
       setAction(actions.checkDealerTurn)
     } else if (action === actions.dealSplitHand) {
+      // player has no more hands
       if (activeHandIndex >= playerHands.length) {
         setAction(actions.dealerTotalCheck)
       } else if (playerHands[activeHandIndex].length < 2) {
