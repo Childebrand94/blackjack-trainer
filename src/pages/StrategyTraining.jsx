@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/playerCards'
-import { buildDecks, buildStackedDeck1, checkBust, drawCard, handTotal } from '../functions/pureFunctions'
+import { buildDecks, buildStackedDeck1, checkBust, drawCard, getHandType, handTotal } from '../functions/pureFunctions'
 import PlayerHandTotal from '../components/PlayerHandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 import Insurance from '../components/Insurance'
 import BlackJack from '../components/BlackJack'
-import { decisionMatrix, strategyCheck } from '../functions/matrix'
+import { strategyCheck } from '../functions/matrix'
+import PlayerFeedBack from '../components/PlayerFeedBack'
 
 const testing = false
 
@@ -22,6 +23,7 @@ const StrategyTraining = () => {
     stand: 'stand',
     double: 'double',
     checkInsurance: 'checkInsurance',
+    checkStrategy: 'checkStrategy',
     dealSplitHand: 'dealSplitHand',
     surrender: 'surrender',
     checkBust: 'checkBust',
@@ -32,6 +34,14 @@ const StrategyTraining = () => {
     insuranceAccepted: 'insuranceAccepted',
     insuranceDeclined: 'insuranceDeclined',
     startNextRound: 'startNextRound',
+    callPlayerAction: 'callPlayerAction',
+  }
+
+  const playerChoices = {
+    stand: 'S',
+    split: 'SP',
+    hit: 'H',
+    double: 'D',
   }
 
   const testDeck = Array.from({ length: 50 }, (_) => {
@@ -52,6 +62,7 @@ const StrategyTraining = () => {
   const initialInsuranceDisplay = false
   const initialBlackjackDisplay = false
   const initialPlayerHandIndex = 0
+  const initialPlayerChoice = null
 
   const [playerHands, setPlayerHands] = useState(initialPlayerHand)
   const [dealerCards, setDealerCards] = useState(initialDealerHand)
@@ -62,6 +73,8 @@ const StrategyTraining = () => {
   const [insuranceDisplayed, setInsuranceDisplay] = useState(initialInsuranceDisplay)
   const [DisplayBlackJack, setDisplayBlackJack] = useState(initialBlackjackDisplay)
   const [activeHandIndex, setActiveHandIndex] = useState(initialPlayerHandIndex)
+  const [playerChoice, setPlayerChoice] = useState(initialPlayerChoice)
+  const [playerFeedback, setPlayerFeedback] = useState('')
 
   const dealPlayerCard = () => {
     const [card, updatedDeckOfCards] = drawCard(deckOfCards, testing)
@@ -80,21 +93,9 @@ const StrategyTraining = () => {
     setDeckOfCards([...updatedDeckOfCards])
   }
 
-  const handleHit = () => {
-    setAction(actions.hit)
-  }
-  const handleSplit = () => {
-    if (playerHands[activeHandIndex][0].name === playerHands[activeHandIndex][1].name) {
-      setAction(actions.split)
-    }
-  }
-
-  const handleStand = () => {
-    setAction(actions.stand)
-  }
-
-  const handleDouble = () => {
-    setAction(actions.double)
+  const handleChoice = (choice) => {
+    setPlayerChoice(choice)
+    setAction(actions.checkStrategy)
   }
 
   const handleInsuranceAccepted = () => {
@@ -113,6 +114,7 @@ const StrategyTraining = () => {
     setDeckOfCards(testing ? initialTestingDeck : initialDeck)
     setDealCardFaceDown(initialDealerCardFaceDown)
     setDisableButtons(initialButton)
+    setPlayerChoice(initialPlayerChoice)
     setInsuranceDisplay(initialInsuranceDisplay)
     setAction(initialAction)
   }
@@ -124,6 +126,7 @@ const StrategyTraining = () => {
     setDealCardFaceDown(initialDealerCardFaceDown)
     setAction(initialAction)
     setDisableButtons(initialButton)
+    setPlayerChoice(initialPlayerChoice)
   }
 
   useEffect(() => {
@@ -254,6 +257,42 @@ const StrategyTraining = () => {
       }, 300)
 
       setAction(actions.standBy)
+    } else if (action === actions.checkStrategy) {
+      // create variable for strategy check function
+      const playerHandTotal = handTotal(playerHands[activeHandIndex % playerHands.length])
+      const dealerCard = dealerCards[1].value
+      const handType = getHandType(playerHands[activeHandIndex % playerHands.length])
+      console.log(strategyCheck(handType, dealerCard, playerHandTotal))
+
+      // call strategyCheck
+      const correctChoice = strategyCheck(handType, dealerCard, playerHandTotal)
+
+      // Give the player feed back on decision, will not move game forward until right option is picked
+      if (playerChoice === correctChoice) {
+        setPlayerFeedback('Correct')
+        setTimeout(() => {
+          setPlayerFeedback('')
+        }, 500)
+        setAction(actions.callPlayerAction)
+      } else {
+        setPlayerFeedback('Try again')
+        setTimeout(() => {
+          setPlayerFeedback('')
+        }, 500)
+        setAction(actions.standBy)
+      }
+    } else if (action === actions.callPlayerAction) {
+      if (playerChoice === playerChoices.stand) {
+        setAction(actions.stand)
+      } else if (playerChoice === playerChoices.split) {
+        if (playerHands[activeHandIndex][0].value === playerHands[activeHandIndex][1].value) {
+          setAction(actions.split)
+        }
+      } else if (playerChoice === playerChoices.double) {
+        setAction(actions.double)
+      } else if (playerChoice === playerChoices.hit) {
+        setAction(actions.hit)
+      }
     } else if (action === actions.startNextRound) {
       nextRound()
     } else if (action === actions.dealerTurn) {
@@ -292,17 +331,19 @@ const StrategyTraining = () => {
         />
       )}
       {DisplayBlackJack && <BlackJack />}
+
+      {playerFeedback && <PlayerFeedBack string={playerFeedback} />}
       <div className="col-start-3 row-start-2 relative">
         <div className="flex items-end flex-col">
-          <Button onClick={handleHit} label={'Hit'} disabled={disableButtons} />
+          <Button onClick={() => handleChoice('H')} label={'Hit'} disabled={disableButtons} />
 
-          <Button onClick={handleSplit} label={'Split'} disabled={disableButtons} />
+          <Button onClick={() => handleChoice('SP')} label={'Split'} disabled={disableButtons} />
 
-          <Button onClick={handleDouble} label={'Double'} disabled={disableButtons} />
+          <Button onClick={() => handleChoice('D')} label={'Double'} disabled={disableButtons} />
 
-          <Button onClick={handleStand} label={'Stand'} disabled={disableButtons} />
+          <Button onClick={() => handleChoice('S')} label={'Stand'} disabled={disableButtons} />
 
-          <Button onClick={() => {}} label={'Surrender'} />
+          <Button onClick={() => handleChoice('SUR')} label={'Surrender'} />
         </div>
         <div className="absolute bottom-0 right-0">
           <Link to="/">
