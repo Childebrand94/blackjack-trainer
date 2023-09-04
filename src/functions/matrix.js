@@ -187,18 +187,27 @@ export const decisionMatrix = {
 
 // checkStrategy :: String -> Int -> Int -> String
 export const strategyCheck = (handType, dealerCardTotal, playerCardTotal) => {
+  // if playerCardTotal exceeds upper range, keep it at 20
+  const playerCardTotalLimited = () => {
+    if (handType === 'pairs') {
+      return playerCardTotal / 2
+    } else {
+      return playerCardTotal > 20 ? 20 : playerCardTotal
+    }
+  }
+
   // get player options as list
   const playerCardRanges = Object.keys(decisionMatrix[handType][dealerCardTotal])
 
   // if player options are a single value return choice
   const rangeMatch = playerCardRanges.find((range) => {
-    if (range === playerCardTotal.toString()) {
+    if (range === playerCardTotalLimited().toString()) {
       return true
     }
 
     // parse player card range into a integers represented by min and max
     const [min, max] = range.split('-').map(Number)
-    return playerCardTotal >= min && playerCardTotal <= max
+    return playerCardTotalLimited() >= min && playerCardTotalLimited() <= max
   })
 
   // if a match was found return choice
@@ -210,23 +219,23 @@ export const strategyCheck = (handType, dealerCardTotal, playerCardTotal) => {
 }
 
 // strategyCheck(handType, dealerCardTotal, playerCardTotal)
-console.log(strategyCheck('hard', 5, 10) === 'D')
-console.log(strategyCheck('hard', 6, 9) === 'D')
-console.log(strategyCheck('hard', 9, 13) === 'H')
-console.log(strategyCheck('hard', 10, 17) === 'S')
-console.log(strategyCheck('hard', 2, 12) === 'H')
+// console.log(strategyCheck('hard', 11, 9))
+// console.log(strategyCheck('hard', 6, 9) === 'D')
+// console.log(strategyCheck('hard', 9, 13) === 'H')
+// console.log(strategyCheck('hard', 10, 17) === 'S')
+// console.log(strategyCheck('hard', 2, 12) === 'H')
 
-console.log(strategyCheck('soft', 2, 13) === 'H')
-console.log(strategyCheck('soft', 7, 16) === 'H')
-console.log(strategyCheck('soft', 6, 18) === 'D')
-console.log(strategyCheck('soft', 11, 19) === 'S')
-console.log(strategyCheck('soft', 6, 18) === 'D')
+// console.log(strategyCheck('soft', 2, 13) === 'H')
+// console.log(strategyCheck('soft', 7, 16) === 'H')
+// console.log(strategyCheck('soft', 6, 18) === 'D')
+// console.log(strategyCheck('soft', 11, 19) === 'S')
+// console.log(strategyCheck('soft', 6, 18) === 'D')
 
 // When passing in the value for pairs, a function will omit one of the
 // cards and only transmit the value of the single card, as long as the hand type
 // is classified as a pair.
-console.log(strategyCheck('pairs', 2, 2) === 'SP')
-console.log(strategyCheck('pairs', 7, 5) === 'D')
-console.log(strategyCheck('pairs', 4, 4) === 'H')
-console.log(strategyCheck('pairs', 11, 8) === 'SP')
-console.log(strategyCheck('pairs', 6, 10) === 'S')
+// console.log(strategyCheck('pairs', 2, 2) === 'SP')
+// console.log(strategyCheck('pairs', 7, 5) === 'D')
+// console.log(strategyCheck('pairs', 4, 4) === 'H')
+// console.log(strategyCheck('pairs', 11, 8) === 'SP')
+// console.log(strategyCheck('pairs', 6, 10) === 'S')
