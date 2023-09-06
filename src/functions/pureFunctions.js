@@ -1,3 +1,5 @@
+import { decisionMatrix } from './matrix'
+
 // buildDecks:: Number -> Card[]
 export const buildDecks = (amount) => {
   const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
@@ -34,12 +36,12 @@ export const buildStackedDeck1 = (amount) => {
         // dealers hand
         return [
           { name: 'A', value: 11, suit: 'Spades' },
-          { name: 10, value: 10, suit: 'Spades' },
+          { name: 5, value: 5, suit: 'Spades' },
         ]
       } else {
         // players hand
         return [
-          { name: 5, value: 5, suit: 'Spades' },
+          { name: 'A', value: 11, suit: 'Spades' },
           { name: 'A', value: 11, suit: 'Spades' },
         ]
       }
@@ -74,6 +76,7 @@ export const handTotal = (hand) => {
   if (!hand) {
     return 0
   }
+  // sort hand and add 'A' last to know if an 'A' is 11 or 1
   const sortedHand = [...hand].sort((a, b) => a.value - b.value)
 
   return sortedHand.reduce((acc, card) => {
@@ -90,7 +93,9 @@ export const handTotal = (hand) => {
 // getHandType:: Card[] -> String
 export const getHandType = (hand) => {
   if (hand.length === 0) return
-  if (hand.some((card) => card.value === 11)) {
+  if (hand.length === 2 && hand.every((card) => card.name === 'A')) {
+    return 'pairs'
+  } else if (hand.some((card) => card.value === 11)) {
     return 'soft'
   } else if (hand[0].value === hand[1].value) {
     return 'pairs'
@@ -101,4 +106,38 @@ export const getHandType = (hand) => {
 // checkBust:: Card[] -> Boolean
 export const checkBust = (hand) => {
   return handTotal(hand) > 21
+}
+
+// checkStrategy :: String -> Int -> Int -> String
+export const strategyCheck = (handType, dealerCardTotal, playerHand) => {
+  // keeping the data useable for decisionMatrix's ranges
+  const parsePlayerHand = () => {
+    if (playerHand.every((card) => card.name === 'A')) {
+      return 11
+    } else if (handType === 'pairs') {
+      return handTotal(playerHand) / 2
+    } else {
+      return handTotal(playerHand) > 20 ? 20 : handTotal(playerHand)
+    }
+  }
+  // get player options as list
+  const playerCardRanges = Object.keys(decisionMatrix[handType][dealerCardTotal])
+
+  // if player options are a single value return choice
+  const rangeMatch = playerCardRanges.find((range) => {
+    if (range === parsePlayerHand().toString()) {
+      return true
+    }
+
+    // parse player card range into a integers represented by min and max
+    const [min, max] = range.split('-').map(Number)
+    return parsePlayerHand() >= min && parsePlayerHand() <= max
+  })
+
+  // if a match was found return choice
+  if (rangeMatch) {
+    return decisionMatrix[handType][dealerCardTotal][rangeMatch]
+  }
+  // if error
+  return `Error handType = ${handType} dealerCard = ${dealerCardTotal} playerHand = ${playerHand}`
 }
