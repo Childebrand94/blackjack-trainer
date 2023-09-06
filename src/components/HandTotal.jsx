@@ -1,4 +1,4 @@
-const PlayerHandTotal = ({ total }) => {
+const HandTotal = ({ total }) => {
   return (
     <div
       className="absolute bg-gray-600 rounded py-1 px-2 text-white text-center"
@@ -8,4 +8,4 @@ const PlayerHandTotal = ({ total }) => {
     </div>
   )
 }
-export default PlayerHandTotal
+export default HandTotal
