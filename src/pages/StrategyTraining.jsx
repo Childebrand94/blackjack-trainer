@@ -2,16 +2,24 @@ import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/playerCards'
-import { buildDecks, buildStackedDeck1, checkBust, drawCard, getHandType, handTotal } from '../functions/pureFunctions'
-import PlayerHandTotal from '../components/PlayerHandTotal'
+import {
+  buildDecks,
+  buildStackedDeck1,
+  checkBust,
+  drawCard,
+  getHandType,
+  handTotal,
+  strategyCheck,
+} from '../functions/pureFunctions'
+import HandTotal from '../components/HandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 import Insurance from '../components/Insurance'
 import BlackJack from '../components/BlackJack'
-import { strategyCheck } from '../functions/matrix'
 import PlayerFeedBack from '../components/PlayerFeedBack'
+import PlayerAccuracy from '../components/PlayerAccuracy'
 
-const testing = false
+const testing = true
 
 const StrategyTraining = () => {
   const actions = {
@@ -63,6 +71,9 @@ const StrategyTraining = () => {
   const initialBlackjackDisplay = false
   const initialPlayerHandIndex = 0
   const initialPlayerChoice = null
+  const initialPlayerFeedback = ''
+  const initialTotalPlayerHands = 0
+  const initialPlayerCorrectChoices = 0
 
   const [playerHands, setPlayerHands] = useState(initialPlayerHand)
   const [dealerCards, setDealerCards] = useState(initialDealerHand)
@@ -74,7 +85,9 @@ const StrategyTraining = () => {
   const [DisplayBlackJack, setDisplayBlackJack] = useState(initialBlackjackDisplay)
   const [activeHandIndex, setActiveHandIndex] = useState(initialPlayerHandIndex)
   const [playerChoice, setPlayerChoice] = useState(initialPlayerChoice)
-  const [playerFeedback, setPlayerFeedback] = useState('')
+  const [playerFeedback, setPlayerFeedback] = useState(initialPlayerFeedback)
+  const [totalPlayerHands, setTotalPlayerHands] = useState(initialTotalPlayerHands)
+  const [totalPlayerCorrectChoices, setTotalPlayerCorrectChoices] = useState(initialPlayerCorrectChoices)
 
   const dealPlayerCard = () => {
     const [card, updatedDeckOfCards] = drawCard(deckOfCards, testing)
@@ -95,6 +108,7 @@ const StrategyTraining = () => {
 
   const handleChoice = (choice) => {
     setPlayerChoice(choice)
+    setTotalPlayerHands((prevAmount) => prevAmount + 1)
     setAction(actions.checkStrategy)
   }
 
@@ -117,6 +131,8 @@ const StrategyTraining = () => {
     setPlayerChoice(initialPlayerChoice)
     setInsuranceDisplay(initialInsuranceDisplay)
     setAction(initialAction)
+    setTotalPlayerHands(initialTotalPlayerHands)
+    setTotalPlayerCorrectChoices(initialPlayerCorrectChoices)
   }
 
   const nextRound = () => {
@@ -258,27 +274,31 @@ const StrategyTraining = () => {
 
       setAction(actions.standBy)
     } else if (action === actions.checkStrategy) {
-      // create variable for strategy check function
-      const playerHandTotal = handTotal(playerHands[activeHandIndex % playerHands.length])
+      // variables for strategyCheck()
+      const activeHand = playerHands[activeHandIndex % playerHands.length]
       const dealerCard = dealerCards[1].value
-      const handType = getHandType(playerHands[activeHandIndex % playerHands.length])
-      console.log(strategyCheck(handType, dealerCard, playerHandTotal))
+      const handType = getHandType(activeHand)
+
+      if (testing) {
+        console.log(strategyCheck(handType, dealerCard, activeHand))
+      }
 
       // call strategyCheck
-      const correctChoice = strategyCheck(handType, dealerCard, playerHandTotal)
+      const correctChoice = strategyCheck(handType, dealerCard, activeHand)
 
-      // Give the player feed back on decision, will not move game forward until right option is picked
+      // give the player feed back on decision, will not move game forward until right option is picked
       if (playerChoice === correctChoice) {
         setPlayerFeedback('Correct')
+        setTotalPlayerCorrectChoices((prevAmount) => prevAmount + 1)
         setTimeout(() => {
           setPlayerFeedback('')
-        }, 500)
+        }, 650)
         setAction(actions.callPlayerAction)
       } else {
         setPlayerFeedback('Try again')
         setTimeout(() => {
           setPlayerFeedback('')
-        }, 500)
+        }, 650)
         setAction(actions.standBy)
       }
     } else if (action === actions.callPlayerAction) {
@@ -316,14 +336,15 @@ const StrategyTraining = () => {
           return <PlayerCards key={nanoid()} cards={hand} action={action} />
         })}
       </div>
+
       <div className="col-start-1 row-start-2 relative">
-        <PlayerHandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />
+        <HandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />
       </div>
 
-      <div className="col-start-1 row-start-1 relative">
-        <PlayerHandTotal total={handTotal(dealerCards)} />
+      <div className="col-start-1 row-start-1 relative">{testing && <HandTotal total={handTotal(dealerCards)} />}</div>
+      <div className="col-stat-3 row-stat-1">
+        <PlayerAccuracy totalHands={totalPlayerHands} correctChoices={totalPlayerCorrectChoices} />
       </div>
-
       {insuranceDisplayed && (
         <Insurance
           handleInsuranceDeclined={handleInsuranceDeclined}
@@ -331,7 +352,6 @@ const StrategyTraining = () => {
         />
       )}
       {DisplayBlackJack && <BlackJack />}
-
       {playerFeedback && <PlayerFeedBack string={playerFeedback} />}
       <div className="col-start-3 row-start-2 relative">
         <div className="flex items-end flex-col">
