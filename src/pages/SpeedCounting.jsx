@@ -16,9 +16,9 @@ import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 import {} from '../functions/matrix'
 
-const testing = true
+const testing = false
 
-const StrategyTraining = () => {
+const SpeedCounting = () => {
   const actions = {
     standBy: 'standBy',
     dealPlayer: 'dealPlayer',
@@ -65,6 +65,7 @@ const StrategyTraining = () => {
   const initialPlayerHandIndex = 0
   const initialPlayerChoice = null
   const initialPauseState = false
+  const delayTime = 600
 
   const [playerHands, setPlayerHands] = useState(initialPlayerHand)
   const [dealerCards, setDealerCards] = useState(initialDealerHand)
@@ -95,7 +96,6 @@ const StrategyTraining = () => {
 
   const handlePauseToggle = () => {
     setPaused(!paused)
-    setAction(actions.standBy)
     if (paused) {
       setAction(actions.callPlayerAction)
     }
@@ -125,6 +125,8 @@ const StrategyTraining = () => {
 
   useEffect(() => {
     console.log(action)
+    const activeHand = playerHands[activeHandIndex % playerHands.length]
+
     if (action === actions.dealPlayer) {
       dealPlayerCard()
 
@@ -138,7 +140,7 @@ const StrategyTraining = () => {
       }
     } else if (action === actions.checkBlackjack) {
       // only catches a player getting dealt a blackjack
-      if (handTotal(playerHands[activeHandIndex]) === 21) {
+      if (handTotal(activeHand) === 21) {
         setActiveHandIndex((prevIndex) => prevIndex + 1)
       }
       setAction(actions.checkDealerTurn)
@@ -146,10 +148,10 @@ const StrategyTraining = () => {
       // player has no more hands
       if (activeHandIndex > playerHands.length - 1) {
         setAction(actions.dealerTotalCheck)
-      } else if (playerHands[activeHandIndex].length < 2) {
+      } else if (activeHand.length < 2) {
         setTimeout(() => {
           dealPlayerCard()
-        }, 300)
+        }, delayTime)
       } else {
         setAction(actions.checkStrategy)
       }
@@ -158,15 +160,15 @@ const StrategyTraining = () => {
       if (activeHandIndex >= playerHands.length) {
         setAction(actions.dealerTotalCheck)
         // player has 21 set dealer turn
-      } else if (handTotal(playerHands[activeHandIndex]) === 21) {
+      } else if (handTotal(activeHand) === 21) {
         setTimeout(() => {
           setAction(actions.dealerTurn)
-        }, 400)
+        }, delayTime)
         // if player has 21 check dealer total
       } else if (handTotal(dealerCards) === 21) {
         setTimeout(() => {
           setAction(actions.dealerTotalCheck)
-        }, 400)
+        }, delayTime)
       } else {
         setAction(actions.checkStrategy)
       }
@@ -179,13 +181,13 @@ const StrategyTraining = () => {
         setDealCardFaceDown(false)
         setTimeout(() => {
           setAction(actions.startNextRound)
-        }, 2000)
+        }, delayTime * 4)
         // dealer has busted
       } else if (handTotal(dealerCards) > 21) {
         console.log('Bust')
         setTimeout(() => {
           setAction(actions.startNextRound)
-        }, 2000)
+        }, delayTime * 4)
       }
     } else if (action === actions.stand) {
       setActiveHandIndex((prevItem) => prevItem + 1)
@@ -194,7 +196,7 @@ const StrategyTraining = () => {
       dealPlayerCard()
       setAction(actions.checkBust)
     } else if (action === actions.checkBust) {
-      if (checkBust(playerHands[activeHandIndex])) {
+      if (checkBust(activeHand)) {
         setActiveHandIndex((prevItem) => prevItem + 1)
       }
       setAction(actions.dealSplitHand)
@@ -208,7 +210,7 @@ const StrategyTraining = () => {
       setActiveHandIndex((prevIndex) => prevIndex + 1)
       setTimeout(() => {
         setAction(actions.dealSplitHand)
-      }, 500)
+      }, delayTime)
     } else if (action === actions.split) {
       setPlayerHands((prevHands) => {
         return prevHands.flatMap((hand, index) => {
@@ -221,13 +223,11 @@ const StrategyTraining = () => {
 
       setTimeout(() => {
         dealPlayerCard()
-      }, 300)
+      }, delayTime)
 
       setAction(actions.checkStrategy)
     } else if (action === actions.checkStrategy) {
       // variables for strategyCheck()
-      const activeHand = playerHands[activeHandIndex % playerHands.length]
-      const playerHandTotal = handTotal(activeHand)
       const dealerCard = dealerCards[1].value
       const handType = getHandType(activeHand)
 
@@ -241,13 +241,13 @@ const StrategyTraining = () => {
       setPlayerChoice(correctChoice)
       setTimeout(() => {
         setAction(actions.callPlayerAction)
-      }, 1000)
+      }, delayTime * 2)
     } else if (action === actions.callPlayerAction) {
       if (!paused) {
         if (playerChoice === playerChoices.stand) {
           setAction(actions.stand)
         } else if (playerChoice === playerChoices.split) {
-          if (playerHands[activeHandIndex][0].value === playerHands[activeHandIndex][1].value) {
+          if (activeHand[0].value === activeHand[1].value) {
             setAction(actions.split)
           }
         } else if (playerChoice === playerChoices.double) {
@@ -257,16 +257,21 @@ const StrategyTraining = () => {
         } else {
           console.log(`Error`)
         }
+      } else {
+        setAction(actions.standBy)
       }
     } else if (action === actions.startNextRound) {
       nextRound()
     } else if (action === actions.dealerTurn) {
-      setDealCardFaceDown(false)
       setDisableButtons(true)
+      setTimeout(() => {
+        setDealCardFaceDown(false)
+      }, delayTime)
+
       setTimeout(() => {
         dealDealerCard()
         setAction(actions.dealerTotalCheck)
-      }, 1000)
+      }, delayTime * 2)
     } else if (action === actions.surrender) {
       setAction(actions.surrender)
     }
@@ -286,11 +291,11 @@ const StrategyTraining = () => {
         <HandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />
       </div>
 
-      <div className="col-start-1 row-start-1 relative">{testing && <HandTotal total={handTotal(dealerCards)} />}</div>
+      <div className="col-start-1 row-start-1 relative">{<HandTotal total={handTotal(dealerCards)} />}</div>
 
       <div className="col-start-3 row-start-2 relative">
         <div className="flex items-end flex-col">
-          <Button onClick={handlePauseToggle} label={'Pause'} />
+          <Button onClick={handlePauseToggle} label={paused ? 'Resume' : 'Pause'} />
         </div>
         <div className="absolute bottom-0 right-0">
           <Link to="/">
@@ -302,4 +307,4 @@ const StrategyTraining = () => {
     </div>
   )
 }
-export default StrategyTraining
+export default SpeedCounting
