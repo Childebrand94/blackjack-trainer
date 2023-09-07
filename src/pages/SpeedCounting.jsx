@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 import {} from '../functions/matrix'
 
-const testing = false
+const testing = true
 
 const SpeedCounting = () => {
   const actions = {
@@ -107,9 +107,7 @@ const SpeedCounting = () => {
     setDealerCards(initialDealerHand)
     setDeckOfCards(testing ? initialTestingDeck : initialDeck)
     setDealCardFaceDown(initialDealerCardFaceDown)
-
     setPlayerChoice(initialPlayerChoice)
-
     setAction(initialAction)
   }
 
@@ -151,6 +149,7 @@ const SpeedCounting = () => {
       } else if (activeHand.length < 2) {
         setTimeout(() => {
           dealPlayerCard()
+          setAction(actions.checkStrategy)
         }, delayTime)
       } else {
         setAction(actions.checkStrategy)
@@ -223,9 +222,8 @@ const SpeedCounting = () => {
 
       setTimeout(() => {
         dealPlayerCard()
+        setAction(actions.checkStrategy)
       }, delayTime)
-
-      setAction(actions.checkStrategy)
     } else if (action === actions.checkStrategy) {
       // variables for strategyCheck()
       const dealerCard = dealerCards[1].value
