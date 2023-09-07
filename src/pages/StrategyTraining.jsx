@@ -74,6 +74,7 @@ const StrategyTraining = () => {
   const initialPlayerFeedback = ''
   const initialTotalPlayerHands = 0
   const initialPlayerCorrectChoices = 0
+  const delayTime = 200
 
   const [playerHands, setPlayerHands] = useState(initialPlayerHand)
   const [dealerCards, setDealerCards] = useState(initialDealerHand)
@@ -171,7 +172,7 @@ const StrategyTraining = () => {
         setDealCardFaceDown(false)
         setTimeout(() => {
           setAction(actions.startNextRound)
-        }, 2000)
+        }, delayTime * 10)
       }
       setAction(actions.checkBlackjack)
     } else if (action === actions.insuranceDeclined) {
@@ -180,7 +181,7 @@ const StrategyTraining = () => {
         setDealCardFaceDown(false)
         setTimeout(() => {
           setAction(actions.startNextRound)
-        }, 2000)
+        }, delayTime * 10)
       }
       setAction(actions.checkBlackjack)
     } else if (action === actions.checkBlackjack) {
@@ -189,7 +190,7 @@ const StrategyTraining = () => {
         setDisplayBlackJack(true)
         setTimeout(() => {
           setDisplayBlackJack(false)
-        }, 1000)
+        }, delayTime * 5)
         setActiveHandIndex((prevIndex) => prevIndex + 1)
       }
       setAction(actions.checkDealerTurn)
@@ -200,7 +201,7 @@ const StrategyTraining = () => {
       } else if (playerHands[activeHandIndex].length < 2) {
         setTimeout(() => {
           dealPlayerCard()
-        }, 300)
+        }, delayTime * 2)
       }
     } else if (action === actions.checkDealerTurn) {
       // if active index is greater than player hands length check dealer total
@@ -210,12 +211,12 @@ const StrategyTraining = () => {
       } else if (handTotal(playerHands[activeHandIndex]) === 21) {
         setTimeout(() => {
           setAction(actions.dealerTurn)
-        }, 300)
+        }, delayTime * 2)
         // if player has 21 check dealer total delay for Blackjack pop up
       } else if (handTotal(dealerCards) === 21) {
         setTimeout(() => {
           setAction(actions.dealerTotalCheck)
-        }, 300)
+        }, delayTime * 2)
       } else {
         setAction(actions.standBy)
       }
@@ -228,13 +229,13 @@ const StrategyTraining = () => {
         setDealCardFaceDown(false)
         setTimeout(() => {
           setAction(actions.startNextRound)
-        }, 2000)
+        }, delayTime * 10)
         // dealer has busted
       } else if (handTotal(dealerCards) > 21) {
         console.log('Bust')
         setTimeout(() => {
           setAction(actions.startNextRound)
-        }, 2000)
+        }, delayTime * 10)
       } else {
         console.log('End')
       }
@@ -270,7 +271,7 @@ const StrategyTraining = () => {
 
       setTimeout(() => {
         dealPlayerCard()
-      }, 300)
+      }, delayTime * 2)
 
       setAction(actions.standBy)
     } else if (action === actions.checkStrategy) {
@@ -292,13 +293,13 @@ const StrategyTraining = () => {
         setTotalPlayerCorrectChoices((prevAmount) => prevAmount + 1)
         setTimeout(() => {
           setPlayerFeedback('')
-        }, 650)
+        }, delayTime * 3)
         setAction(actions.callPlayerAction)
       } else {
         setPlayerFeedback('Try again')
         setTimeout(() => {
           setPlayerFeedback('')
-        }, 650)
+        }, delayTime * 3)
         setAction(actions.standBy)
       }
     } else if (action === actions.callPlayerAction) {
@@ -321,7 +322,7 @@ const StrategyTraining = () => {
       setTimeout(() => {
         dealDealerCard()
         setAction(actions.dealerTotalCheck)
-      }, 1000)
+      }, delayTime * 5)
     } else if (action === actions.surrender) {
       setAction(actions.surrender)
     }
