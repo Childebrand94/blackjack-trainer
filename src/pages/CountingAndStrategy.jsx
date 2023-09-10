@@ -1,6 +1,6 @@
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
-import PlayerCards from '../components/PlayerCards'
+import PlayerCards from '../components/playerCards'
 
 const CountingAndStrategy = () => {
   const onClick = () => {
