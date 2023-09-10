@@ -1,4 +1,5 @@
-import { decisionMatrix } from './matrix'
+import { decisionMatrix } from './matrix.js'
+import { handTypes } from './types.js'
 
 // buildDecks:: Number -> Card[]
 export const buildDecks = (amount) => {
@@ -9,11 +10,9 @@ export const buildDecks = (amount) => {
     return Array.from({ length: amount * 13 }, (_, index) => {
       const valueIndex = index % 13
       return {
-        // potentially remove value key and calculate on the fly
         value: valueIndex <= 8 ? 2 + valueIndex : royalCards[valueIndex - 9] === 'A' ? 11 : 10,
         name: valueIndex <= 8 ? (2 + valueIndex).toString() : royalCards[valueIndex - 9],
         suit: suit,
-        // faceUp: true,
       }
     })
   }
@@ -35,14 +34,14 @@ export const buildStackedDeck1 = (amount) => {
       if (index % 2 === 0) {
         // dealers hand
         return [
-          { name: 'A', value: 11, suit: 'Spades' },
-          { name: 5, value: 5, suit: 'Spades' },
+          { name: '8', value: 8, suit: 'Spades' },
+          { name: 10, value: 10, suit: 'Spades' },
         ]
       } else {
         // players hand
         return [
-          { name: 'A', value: 11, suit: 'Spades' },
-          { name: 'A', value: 11, suit: 'Spades' },
+          { name: '3', value: 3, suit: 'Spades' },
+          { name: 'J', value: 10, suit: 'Spades' },
         ]
       }
     }).flat()
@@ -59,15 +58,6 @@ export const drawCard = (deckCards, stackedDeck = false) => {
   } else {
     const newDeck = [...deckCards.filter((_, index) => index !== 0)]
     return [deckCards[0], newDeck]
-  }
-}
-
-// dealOrder :: array -> array -> Card -> [[],[]]
-export const dealOrder = (playerHand, dealerHand, card) => {
-  if (playerHand.length <= dealerHand.length) {
-    return [[...playerHand, card], [...dealerHand]]
-  } else {
-    return [[...playerHand], [...dealerHand, card]]
   }
 }
 
@@ -94,13 +84,13 @@ export const handTotal = (hand) => {
 export const getHandType = (hand) => {
   if (hand.length === 0) return
   if (hand.length === 2 && hand.every((card) => card.name === 'A')) {
-    return 'pairs'
+    return handTypes.pairs
   } else if (hand.some((card) => card.value === 11)) {
-    return 'soft'
-  } else if (hand[0].value === hand[1].value) {
-    return 'pairs'
+    return handTypes.soft
+  } else if (hand.every((card) => card.value === hand[0].value)) {
+    return handTypes.pairs
   }
-  return 'hard'
+  return handTypes.hard
 }
 
 // checkBust:: Card[] -> Boolean
@@ -108,13 +98,13 @@ export const checkBust = (hand) => {
   return handTotal(hand) > 21
 }
 
-// checkStrategy :: String -> Int -> Int -> String
+// checkStrategy :: String -> Int -> Card[] -> String
 export const strategyCheck = (handType, dealerCardTotal, playerHand) => {
   // keeping the data useable for decisionMatrix's ranges
   const parsePlayerHand = () => {
     if (playerHand.every((card) => card.name === 'A')) {
       return 11
-    } else if (handType === 'pairs') {
+    } else if (handType === handTypes.pairs) {
       return handTotal(playerHand) / 2
     } else {
       return handTotal(playerHand) > 20 ? 20 : handTotal(playerHand)
@@ -140,4 +130,23 @@ export const strategyCheck = (handType, dealerCardTotal, playerHand) => {
   }
   // if error
   return `Error handType = ${handType} dealerCard = ${dealerCardTotal} playerHand = ${playerHand}`
+}
+
+// keepCount :: Card[] -> Number
+export const getRunningCount = (hand) => {
+  if (!hand) return 0
+  return hand.reduce((acc, card) => {
+    if (card.value >= 10) {
+      return acc - 1
+    } else if (card.value >= 2 && card.value <= 6) {
+      return acc + 1
+    } else {
+      return acc
+    }
+  }, 0)
+}
+
+// getTrueCount :: Number -> Number -> Number
+export const getTrueCount = (runningCount, decksRemaining) => {
+  return Math.floor(runningCount / decksRemaining)
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/playerCards'
+import { actions, playerChoices, userFeedBackResponse } from '../functions/types'
 import {
   buildDecks,
   buildStackedDeck1,
@@ -19,39 +20,9 @@ import BlackJack from '../components/BlackJack'
 import PlayerFeedBack from '../components/PlayerFeedBack'
 import PlayerAccuracy from '../components/PlayerAccuracy'
 
-const testing = true
+const testing = false
 
 const StrategyTraining = () => {
-  const actions = {
-    standBy: 'standBy',
-    dealPlayer: 'dealPlayer',
-    dealDealer: 'dealDealer',
-    hit: 'hit',
-    split: 'split',
-    stand: 'stand',
-    double: 'double',
-    checkInsurance: 'checkInsurance',
-    checkStrategy: 'checkStrategy',
-    dealSplitHand: 'dealSplitHand',
-    surrender: 'surrender',
-    checkBust: 'checkBust',
-    checkDealerTurn: 'checkDealerTurn',
-    checkBlackjack: 'checkBlackjack',
-    dealerTurn: 'dealerTurn',
-    dealerTotalCheck: 'dealerTotalCheck',
-    insuranceAccepted: 'insuranceAccepted',
-    insuranceDeclined: 'insuranceDeclined',
-    startNextRound: 'startNextRound',
-    callPlayerAction: 'callPlayerAction',
-  }
-
-  const playerChoices = {
-    stand: 'S',
-    split: 'SP',
-    hit: 'H',
-    double: 'D',
-  }
-
   const testDeck = Array.from({ length: 50 }, (_) => {
     return {
       value: 11,
@@ -71,7 +42,7 @@ const StrategyTraining = () => {
   const initialBlackjackDisplay = false
   const initialPlayerHandIndex = 0
   const initialPlayerChoice = null
-  const initialPlayerFeedback = ''
+  const initialPlayerFeedback = userFeedBackResponse.default
   const initialTotalPlayerHands = 0
   const initialPlayerCorrectChoices = 0
   const delayTime = 200
@@ -108,9 +79,11 @@ const StrategyTraining = () => {
   }
 
   const handleChoice = (choice) => {
-    setPlayerChoice(choice)
-    setTotalPlayerHands((prevAmount) => prevAmount + 1)
-    setAction(actions.checkStrategy)
+    if (action === actions.standBy) {
+      setPlayerChoice(choice)
+      setTotalPlayerHands((prevAmount) => prevAmount + 1)
+      setAction(actions.checkStrategy)
+    }
   }
 
   const handleInsuranceAccepted = () => {
@@ -201,7 +174,10 @@ const StrategyTraining = () => {
       } else if (playerHands[activeHandIndex].length < 2) {
         setTimeout(() => {
           dealPlayerCard()
+          setAction(actions.standBy)
         }, delayTime * 2)
+      } else {
+        setAction(actions.standBy)
       }
     } else if (action === actions.checkDealerTurn) {
       // if active index is greater than player hands length check dealer total
@@ -289,18 +265,18 @@ const StrategyTraining = () => {
 
       // give the player feed back on decision, will not move game forward until right option is picked
       if (playerChoice === correctChoice) {
-        setPlayerFeedback('Correct')
+        setPlayerFeedback(userFeedBackResponse.correct)
         setTotalPlayerCorrectChoices((prevAmount) => prevAmount + 1)
         setTimeout(() => {
-          setPlayerFeedback('')
+          setPlayerFeedback(userFeedBackResponse.default)
         }, delayTime * 3)
         setAction(actions.callPlayerAction)
       } else {
-        setPlayerFeedback('Try again')
+        setPlayerFeedback(userFeedBackResponse.tryAgain)
         setTimeout(() => {
-          setPlayerFeedback('')
+          setPlayerFeedback(userFeedBackResponse.default)
+          setAction(actions.standBy)
         }, delayTime * 3)
-        setAction(actions.standBy)
       }
     } else if (action === actions.callPlayerAction) {
       if (playerChoice === playerChoices.stand) {
