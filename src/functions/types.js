@@ -39,6 +39,7 @@ export const handTypes = {
 
 export const userFeedBackResponse = {
   correct: 'Correct',
+  incorrect: 'Incorrect',
   tryAgain: 'Try agin',
   reshuffle: 'No More Cards Reshuffling Shoe',
   default: '',
