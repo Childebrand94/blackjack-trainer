@@ -1,5 +1,5 @@
 import { decisionMatrix } from './matrix.js'
-import { handTypes } from './types.js'
+import { handTypes, playerChoices } from './types.js'
 
 // buildDecks:: Number -> Card[]
 export const buildDecks = (amount) => {
@@ -52,9 +52,9 @@ export const buildStackedDeck1 = (amount) => {
 // drawCard:: -> Card[] -> [Card, Card[]]
 export const drawCard = (deckCards, stackedDeck = false) => {
   if (!stackedDeck) {
-    const randomIndex = Math.floor(Math.random() * deckCards.length)
-    const newDeck = [...deckCards.filter((_, index) => index !== randomIndex)]
-    return [deckCards[randomIndex], newDeck]
+    // const randomIndex = Math.floor(Math.random() * deckCards.length)
+    const newDeck = [...deckCards.filter((_, index) => index !== 0)]
+    return [deckCards[0], newDeck]
   } else {
     const newDeck = [...deckCards.filter((_, index) => index !== 0)]
     return [deckCards[0], newDeck]
@@ -79,13 +79,22 @@ export const handTotal = (hand) => {
     }
   }, 0)
 }
+const isSoftHand = (hand) => {
+  // Check if there's an Ace in the hand
+  if (!hand.some((card) => card.name === 'A')) return false
+
+  // Calculate the hand total assuming all Aces are counted as 1
+  const totalWithAcesAsOne = handTotal(hand.map((card) => (card.name === 'A' ? { ...card, value: 1 } : card)))
+
+  return totalWithAcesAsOne <= 11
+}
 
 // getHandType:: Card[] -> String
 export const getHandType = (hand) => {
   if (hand.length === 0) return
   if (hand.length === 2 && hand.every((card) => card.name === 'A')) {
     return handTypes.pairs
-  } else if (hand.some((card) => card.value === 11)) {
+  } else if (isSoftHand(hand)) {
     return handTypes.soft
   } else if (hand.every((card) => card.value === hand[0].value)) {
     return handTypes.pairs
@@ -100,8 +109,9 @@ export const checkBust = (hand) => {
 
 // checkStrategy :: String -> Int -> Card[] -> String
 export const strategyCheck = (handType, dealerCardTotal, playerHand) => {
-  // keeping the data useable for decisionMatrix's ranges
+  // parse data to follow decisionMatrix structure
   const parsePlayerHand = () => {
+    // since pairs have to be / by two and two A's === 12
     if (playerHand.every((card) => card.name === 'A')) {
       return 11
     } else if (handType === handTypes.pairs) {
@@ -132,6 +142,15 @@ export const strategyCheck = (handType, dealerCardTotal, playerHand) => {
   return `Error handType = ${handType} dealerCard = ${dealerCardTotal} playerHand = ${playerHand}`
 }
 
+// console.log(
+//   strategyCheck('hard', 10, [
+//     { name: 5, value: 5, suite: 'Spade' },
+//     { name: 5, value: 5, suite: 'Spade' },
+//     { name: 3, value: 3, suite: 'Spade' },
+//     { name: 4, value: 4, suite: 'Spade' },
+//   ])
+// )
+
 // keepCount :: Card[] -> Number
 export const getRunningCount = (hand) => {
   if (!hand) return 0
@@ -149,4 +168,19 @@ export const getRunningCount = (hand) => {
 // getTrueCount :: Number -> Number -> Number
 export const getTrueCount = (runningCount, decksRemaining) => {
   return Math.floor(runningCount / decksRemaining)
+}
+
+// shuffleDeck :: Card[] -> Card[]
+export const shuffleDeck = (array) => {
+  const copyArray = [...array]
+
+  // Shuffle the copy
+  const shuffledArray = copyArray.reduce((acc, _, currentIndex) => {
+    const randomIndex = Math.floor(Math.random() * (currentIndex + 1))
+    acc[currentIndex] = acc[randomIndex]
+    acc[randomIndex] = array[currentIndex]
+    return acc
+  }, [])
+
+  return shuffledArray
 }
