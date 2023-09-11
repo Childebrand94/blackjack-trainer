@@ -18,7 +18,7 @@ export const decisionMatrix = {
       '5-8': playerChoices.hit,
       '9-11': playerChoices.double,
       12: playerChoices.hit,
-      '13 -20': playerChoices.stand,
+      '13-20': playerChoices.stand,
     },
     4: {
       '5-8': playerChoices.hit,
