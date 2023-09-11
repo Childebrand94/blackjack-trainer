@@ -1,7 +1,9 @@
+import { userFeedBackResponse } from '../functions/types'
+
 const TestPlayerResponse = ({ correctResponse, runningCount, trueCount }) => {
   return (
     <div className="bg-gray-400 p-4 rounded-xl absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-      {correctResponse === 'correct' ? (
+      {correctResponse === userFeedBackResponse.correct ? (
         <p className="text-center text-white text-xl font-bold">Correct</p>
       ) : (
         <div>

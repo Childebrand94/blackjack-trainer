@@ -18,10 +18,10 @@ export const buildDecks = (amount) => {
   }
   return suits.flatMap((suit) => createSuitedCards(suit))
 }
-const testDeck = Array.from({ length: 50 }, (_) => {
+export const testDeck = Array.from({ length: 50 }, (_) => {
   return {
-    value: 11,
-    name: 'A',
+    value: 10,
+    name: 10,
     suit: 'Hearts',
   }
 })

@@ -42,8 +42,8 @@ const SpeedCounting = () => {
   const initialResponse = ''
   const initialRoundCount = 0
   const initialCount = 0
-  const roundsToTest = 3
-  const delayTime = 600
+  const roundsToTest = 1
+  const delayTime = 200
 
   const [playerHands, setPlayerHands] = useState(initialPlayerHand)
   const [dealerCards, setDealerCards] = useState(initialDealerHand)
@@ -72,7 +72,6 @@ const SpeedCounting = () => {
   }
 
   const dealPlayerCard = () => {
-    console.log('Dealing Player Card')
     const [card, updatedDeckOfCards] = drawCard(deckOfCards, testing)
     // refactor to be pure
     setPlayerHands((prevHands) => {
@@ -96,11 +95,6 @@ const SpeedCounting = () => {
   const handlePauseToggle = (prevAction) => {
     setPaused(!paused)
   }
-  //   const resumeAction = Object.keys(actions).find((key) => actions[key] === prevAction)
-  //   if (!paused) {
-  //     setAction(resumeAction)
-  //   }
-  // }
 
   const handleReset = () => {
     setActiveHandIndex(initialPlayerHandIndex)
@@ -128,7 +122,14 @@ const SpeedCounting = () => {
   }
 
   const handlePlayerResponse = (userInput) => {
-    if ((parseInt(userInput.runningCount) === runningCount, parseInt(userInput.trueCount) === trueCount)) {
+    console.log(userInput)
+    console.log(parseInt(userInput.runningCount))
+    console.log(runningCount)
+    console.log(parseInt(userInput.trueCount))
+    console.log(trueCount)
+    console.log(parseInt(userInput.runningCount) === runningCount)
+    console.log(parseInt(userInput.trueCount) === trueCount)
+    if (parseInt(userInput.runningCount) === runningCount && parseInt(userInput.trueCount) === trueCount) {
       setTestPlayerDisplay(false)
       setCorrectPlayerResponse(userFeedBackResponse.correct)
       setTimeout(() => {
@@ -144,11 +145,16 @@ const SpeedCounting = () => {
       }, delayTime * 3)
     }
   }
+  useEffect(() => {
+    const currentRunningCount = getRunningCount(dealtCards)
+    setRunningCount(currentRunningCount)
+    setTrueCount(getTrueCount(currentRunningCount, deckOfCards.length / 52))
+  }, [dealtCards])
 
   useEffect(() => {
-    console.log(action)
-    console.log(`handTotal(activeHand) = ${handTotal(activeHand)}`)
-    console.log(playerChoice)
+    // console.log(action)
+    // console.log(`handTotal(activeHand) = ${handTotal(activeHand)}`)
+    // console.log(playerChoice)
     if (!paused) {
       if (action === actions.dealPlayer) {
         setTimeout(() => {
@@ -172,16 +178,16 @@ const SpeedCounting = () => {
         setAction(actions.checkDealerTurn)
       } else if (action === actions.dealSplitHand) {
         // player has no more hands
-        if (activeHandIndex > playerHands.length - 1) {
-          setAction(actions.dealerTotalCheck)
-        } else if (activeHand.length < 2) {
-          setTimeout(() => {
+        setTimeout(() => {
+          if (activeHandIndex > playerHands.length - 1) {
+            setAction(actions.dealerTotalCheck)
+          } else if (activeHand.length < 2) {
             dealPlayerCard()
             setAction(actions.checkStrategy)
-          }, delayTime)
-        } else {
-          setAction(actions.checkStrategy)
-        }
+          } else {
+            setAction(actions.checkStrategy)
+          }
+        }, delayTime)
       } else if (action === actions.checkDealerTurn) {
         // if active index is greater than player hands length check dealer total
         setTimeout(() => {
@@ -219,9 +225,10 @@ const SpeedCounting = () => {
         setAction(actions.dealSplitHand)
       } else if (action === actions.hit) {
         setTimeout(() => {
+          console.log('hit deal Card')
           dealPlayerCard()
+          setAction(actions.checkBust)
         }, delayTime * 2)
-        setAction(actions.checkBust)
       } else if (action === actions.checkBust) {
         if (checkBust(activeHand)) {
           setActiveHandIndex((prevItem) => prevItem + 1)
@@ -262,9 +269,8 @@ const SpeedCounting = () => {
 
         // execute the correct choice
         setPlayerChoice(correctChoice)
-        setTimeout(() => {
-          setAction(actions.callPlayerAction)
-        }, delayTime * 2)
+
+        setAction(actions.callPlayerAction)
       } else if (action === actions.callPlayerAction) {
         if (playerChoice === playerChoices.stand) {
           setAction(actions.stand)
@@ -303,9 +309,6 @@ const SpeedCounting = () => {
           setAction(actions.dealerTotalCheck)
         }, delayTime * 3)
       } else if (action === actions.getCount) {
-        const currentRunningCount = getRunningCount(dealtCards)
-        setRunningCount(currentRunningCount)
-        setTrueCount(getTrueCount(currentRunningCount, deckOfCards.length / 52))
         setAction(actions.test)
       } else if (action === actions.test) {
         setTestPlayerDisplay(true)
@@ -347,10 +350,18 @@ const SpeedCounting = () => {
 
       {playerFeedback && <PlayerFeedBack string={playerFeedback} />}
       {testPlayerDisplay && (
-        <TestPlayer handlePlayerResponse={handlePlayerResponse} runningCount={runningCount} trueCount={trueCount} />
+        <TestPlayer
+          handlePlayerResponse={handlePlayerResponse}
+          runningCount={getRunningCount(dealtCards)}
+          trueCount={getTrueCount(getRunningCount(dealtCards), deckOfCards.length / 52)}
+        />
       )}
       {correctPlayerResponse && (
-        <TestPlayerResponse correctResponse={correctPlayerResponse} runningCount={runningCount} trueCount={trueCount} />
+        <TestPlayerResponse
+          correctResponse={correctPlayerResponse}
+          runningCount={getRunningCount(dealtCards)}
+          trueCount={getTrueCount(getRunningCount(dealtCards), deckOfCards.length / 52)}
+        />
       )}
 
       <div className="col-start-3 row-start-2 relative">
