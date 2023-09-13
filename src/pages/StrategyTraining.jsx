@@ -10,6 +10,7 @@ import {
   drawCard,
   getHandType,
   handTotal,
+  shuffleDeck,
   strategyCheck,
 } from '../functions/pureFunctions'
 import HandTotal from '../components/HandTotal'
@@ -33,7 +34,7 @@ const StrategyTraining = () => {
 
   const initialPlayerHand = [[]]
   const initialDealerHand = []
-  const initialDeck = buildDecks(6)
+  const initialDeck = shuffleDeck(buildDecks(6))
   const initialTestingDeck = buildStackedDeck1(100)
   const initialButton = false
   const initialAction = actions.dealPlayer
@@ -305,48 +306,56 @@ const StrategyTraining = () => {
   }, [action])
 
   return (
-    <div className="grid grid-cols-3 gap-0 grid-rows-2 h-[100vh] bg-green-700 relative">
-      <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
+    <div className="flex justify-center items-center h-screen bg-gray-700">
+      <div className="grid grid-cols-3 gap-0 grid-rows-2 w-[1255px] h-[855px] bg-green-700  overflow-hidden relative rounded-2xl ">
+        <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
 
-      <div className="col-start-2 row-start-2 flex space-x-10">
-        {playerHands.map((hand) => {
-          return <PlayerCards key={nanoid()} cards={hand} action={action} />
-        })}
-      </div>
-
-      <div className="col-start-1 row-start-2 relative">
-        <HandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />
-      </div>
-
-      <div className="col-start-1 row-start-1 relative">{testing && <HandTotal total={handTotal(dealerCards)} />}</div>
-      <div className="col-stat-3 row-stat-1">
-        <PlayerAccuracy totalHands={totalPlayerHands} correctChoices={totalPlayerCorrectChoices} />
-      </div>
-      {insuranceDisplayed && (
-        <Insurance
-          handleInsuranceDeclined={handleInsuranceDeclined}
-          handleInsuranceAccepted={handleInsuranceAccepted}
-        />
-      )}
-      {DisplayBlackJack && <BlackJack />}
-      {playerFeedback && <PlayerFeedBack string={playerFeedback} />}
-      <div className="col-start-3 row-start-2 relative">
-        <div className="flex items-end flex-col">
-          <Button onClick={() => handleChoice('H')} label={'Hit'} disabled={disableButtons} />
-
-          <Button onClick={() => handleChoice('SP')} label={'Split'} disabled={disableButtons} />
-
-          <Button onClick={() => handleChoice('D')} label={'Double'} disabled={disableButtons} />
-
-          <Button onClick={() => handleChoice('S')} label={'Stand'} disabled={disableButtons} />
-
-          <Button onClick={() => handleChoice('SUR')} label={'Surrender'} />
+        <div className="col-start-2 row-start-2 flex space-x-10">
+          {playerHands.map((hand) => {
+            return <PlayerCards key={nanoid()} cards={hand} action={action} />
+          })}
         </div>
-        <div className="absolute bottom-0 right-0">
-          <Link to="/">
-            <Button label={'Quit'} />
-          </Link>
-          <Button onClick={handleReset} label={'Reset'} />
+
+        <div className="col-start-1 row-start-2 relative">
+          <HandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />
+        </div>
+
+        <div className="col-start-1 row-start-1 relative">
+          {testing && <HandTotal total={handTotal(dealerCards)} />}
+        </div>
+        <div className="col-stat-3 row-stat-1">
+          <PlayerAccuracy totalHands={totalPlayerHands} correctChoices={totalPlayerCorrectChoices} />
+        </div>
+        {insuranceDisplayed && (
+          <Insurance
+            handleInsuranceDeclined={handleInsuranceDeclined}
+            handleInsuranceAccepted={handleInsuranceAccepted}
+          />
+        )}
+        {DisplayBlackJack && <BlackJack />}
+        {playerFeedback && <PlayerFeedBack string={playerFeedback} />}
+        <div className="col-start-3 row-start-2 relative">
+          <div className="flex items-end flex-col">
+            <Button onClick={() => handleChoice('H')} label={'Hit'} disabled={disableButtons} />
+
+            <Button onClick={() => handleChoice('SP')} label={'Split'} disabled={disableButtons} />
+
+            <Button
+              onClick={() => handleChoice('D')}
+              label={'Double'}
+              disabled={disableButtons || playerHands[activeHandIndex % playerHands.length].length > 2}
+            />
+
+            <Button onClick={() => handleChoice('S')} label={'Stand'} disabled={disableButtons} />
+
+            <Button onClick={() => handleChoice('SUR')} label={'Surrender'} />
+          </div>
+          <div className="absolute bottom-0 right-0">
+            <Link to="/">
+              <Button label={'Quit'} />
+            </Link>
+            <Button onClick={handleReset} label={'Reset'} />
+          </div>
         </div>
       </div>
     </div>
