@@ -1,12 +1,8 @@
-@keyframes card-slide {
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(200px, 200px); /* Adjust the final position */
-  }
+.card-animation {
+  transform: translate(-100%, -100%); /* Adjust as needed */
+  transition: transform 0.5s ease-in-out;
 }
 
-.animate-card-slide {
-  animation: card-slide 1s ease-in-out; /* Adjust duration and timing function */
+.card-animation.slide-in {
+  transform: translate(0, 0);
 }
