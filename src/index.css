@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.card-animation {
+  transform: translate(100%, -100%); /* Adjust as needed */
+  transition: transform 3s ease-in-out;
+}
+
+.card-animation.slide-in {
+  transform: translate(0, 0);
+}

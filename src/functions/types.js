@@ -22,6 +22,7 @@ export const actions = {
   getCount: 'getCount',
   reshuffle: 'reshuffle',
   test: 'test',
+  animation: 'animation',
 }
 
 export const playerChoices = {
