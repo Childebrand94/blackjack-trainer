@@ -371,34 +371,55 @@ const StrategyTraining = () => {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-700">
-      <div className="grid grid-cols-1 md:grid-cols-3  gap-0 grid-rows-2 w-[1255px] h-[855px] bg-green-700  overflow-hidden relative rounded-2xl ">
-        <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
-        <div className="col-start-2 row-start-2 flex space-x-10">
+      <div className="grid grid-cols-1 p-4 gap-0 grid-rows-2 w-[1255px] h-[855px] bg-green-700  overflow-hidden relative rounded-2xl sm:grid-cols-3 ">
+        {/* Dealer and Player Hands  */}
+
+        <div className="col-start-1 row-start-1 relative min-w-[300px] min-h-[400px] sm:col-start-2">
+          <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
+        </div>
+        <div className="col-start-1 row-start-1 flex space-x-10 sm:col-start-2 min-h-[400px] min-w-[300px] sm:row-start-2">
           {playerHands.map((hand) => {
             return <PlayerCards key={nanoid()} cards={hand} action={action} />
           })}
         </div>
-        <div className="col-start-1 row-start-2 relative">
+
+        {/* Buttons */}
+
+        <div className=" col-start-1 row-start-2 flex flex-col relative h-screen sm:col-start-3">
+          <div className="flex flex-col items-end pt-24 sm:pt-6">
+            <Button onClick={() => handleChoice('H')} label={'Hit'} disabled={disableButtons} />
+            <Button onClick={() => handleChoice('SP')} label={'Split'} disabled={disableButtons} />
+            <Button
+              onClick={() => handleChoice('D')}
+              label={'Double'}
+              disabled={disableButtons || playerHands[activeHandIndex % playerHands.length].length > 2}
+            />
+            <Button onClick={() => handleChoice('S')} label={'Stand'} disabled={disableButtons} />
+            <Button onClick={() => handleChoice('SUR')} label={'Surrender'} />
+            <Button onClick={handleReset} label={'Reset'} />
+            <Link to="/">
+              <Button label={'Quit'} />
+            </Link>
+          </div>
+        </div>
+
+        {/* Hand Totals  */}
+        <div className="col-start-1 row-start-1 relative sm:row-start-2 ">
           <HandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />
         </div>
         <div className="col-start-1 row-start-1 relative">
           {testing && <HandTotal total={handTotal(dealerCards)} />}
         </div>
-        <div className="col-stat-3 row-stat-1">
+
+        {/* Running, True, DeckReaming Displays */}
+
+        <div className="col-stat-3 row-stat-1 p-6"></div>
+
+        <div className="col-start-1 row-start-2 pt-24 relative flex flex-col sm:items-start">
           <PlayerAccuracy totalHands={totalPlayerHands} correctChoices={totalPlayerCorrectChoices} />
-        </div>
-        {insuranceDisplayed && (
-          <Insurance
-            handleInsuranceDeclined={handleInsuranceDeclined}
-            handleInsuranceAccepted={handleInsuranceAccepted}
-          />
-        )}
-        {DisplayBlackJack && <BlackJack />}
-        {playerFeedback && <PlayerFeedBack string={playerFeedback} />}
-        <div className="col-start-1 row-start-1 relative">
           <DecksRemaining cardsDealt={dealtCards.length} />
           {testing && (
-            <div>
+            <div className="flex flex-col w-full sm:items-start">
               <CountStats label={'Running Count'} stat={getRunningCount(dealtCards)} />
               <CountStats
                 label={'True Count'}
@@ -408,6 +429,20 @@ const StrategyTraining = () => {
             </div>
           )}
         </div>
+
+        {/* Insurance Module */}
+
+        {insuranceDisplayed && (
+          <Insurance
+            handleInsuranceDeclined={handleInsuranceDeclined}
+            handleInsuranceAccepted={handleInsuranceAccepted}
+          />
+        )}
+        {DisplayBlackJack && <BlackJack />}
+        {playerFeedback && <PlayerFeedBack string={playerFeedback} />}
+
+        {/* Testing Player */}
+
         {testPlayerDisplay && (
           <TestPlayer
             handlePlayerResponse={handlePlayerResponse}
@@ -422,25 +457,6 @@ const StrategyTraining = () => {
             trueCount={getTrueCount(getRunningCount(dealtCards), deckOfCards.length / 52)}
           />
         )}
-        <div className="col-start-3 row-start-2 relative">
-          <div className="flex items-end flex-col">
-            <Button onClick={() => handleChoice('H')} label={'Hit'} disabled={disableButtons} />
-            <Button onClick={() => handleChoice('SP')} label={'Split'} disabled={disableButtons} />
-            <Button
-              onClick={() => handleChoice('D')}
-              label={'Double'}
-              disabled={disableButtons || playerHands[activeHandIndex % playerHands.length].length > 2}
-            />
-            <Button onClick={() => handleChoice('S')} label={'Stand'} disabled={disableButtons} />
-            <Button onClick={() => handleChoice('SUR')} label={'Surrender'} />
-          </div>
-          <div className="absolute bottom-0 right-0">
-            <Link to="/">
-              <Button label={'Quit'} />
-            </Link>
-            <Button onClick={handleReset} label={'Reset'} />
-          </div>
-        </div>
       </div>
     </div>
   )
