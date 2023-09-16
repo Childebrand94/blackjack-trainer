@@ -3,8 +3,8 @@ import { nanoid } from 'nanoid'
 const PlayerCards = ({ cards }) => {
   const getImageStyle = (card, index) => {
     return {
-      bottom: card.double ? `${index * 40}px` : `${index * 20}px`,
-      left: card.double ? `${index * 48}px` : `${index * 35}px`,
+      bottom: card.double ? `${index * 40}px` : window.innerWidth >= 768 ? `${index * 20}px` : '0px',
+      left: card.double ? `${index * 48}px` : window.innerWidth >= 768 ? `${index * 35}px` : `${index * 35}px`,
     }
   }
 
