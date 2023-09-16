@@ -23,11 +23,11 @@ const NavBar = () => {
               Counting and Strategy
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link to="/Settings" className="text-white hover:text-gray-300">
               Settings
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
     </nav>

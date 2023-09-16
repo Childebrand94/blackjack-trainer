@@ -13,7 +13,7 @@ import {
 } from '../functions/pureFunctions'
 import { useEffect, useState } from 'react'
 
-const useGame = ({ delayTime, gameMode }) => {
+const useGame = ({ paused, delayTime, gameMode }) => {
   const testing = true
 
   const initialPlayerHand = [[]]
@@ -461,7 +461,7 @@ const useGame = ({ delayTime, gameMode }) => {
       onEnter: () => {
         setTimeout(() => {
           nextRound()
-        }, delayTime * 5)
+        }, delayTime * (gameMode === gameModes.speedCounting ? 3 : 5))
       },
       transitions: {},
     },
@@ -519,8 +519,10 @@ const useGame = ({ delayTime, gameMode }) => {
     }
   }
   useEffect(() => {
-    handleStateTransition()
-  }, [action])
+    if (!paused) {
+      handleStateTransition()
+    }
+  }, [action, paused])
 
   return {
     playerHands,
@@ -538,6 +540,7 @@ const useGame = ({ delayTime, gameMode }) => {
     disableButtons,
     totalPlayerHands,
     totalPlayerCorrectChoices,
+    action,
     handleReset,
     handleChoice,
     handlePlayerResponse,
