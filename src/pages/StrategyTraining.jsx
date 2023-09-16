@@ -1,18 +1,8 @@
-import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/playerCards'
-import { actions, playerChoices, userFeedBackResponse } from '../functions/types'
-import {
-  buildDecks,
-  buildStackedDeck1,
-  checkBust,
-  drawCard,
-  getHandType,
-  handTotal,
-  shuffleDeck,
-  strategyCheck,
-} from '../functions/pureFunctions'
+import { gameModes } from '../functions/types'
+import { handTotal } from '../functions/pureFunctions'
 import HandTotal from '../components/HandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
@@ -20,93 +10,58 @@ import Insurance from '../components/Insurance'
 import BlackJack from '../components/BlackJack'
 import PlayerFeedBack from '../components/PlayerFeedBack'
 import PlayerAccuracy from '../components/PlayerAccuracy'
+import useGame from '../components/useGame'
 
-const testing = false
+const testing = true
 
 const StrategyTraining = () => {
-  const testDeck = Array.from({ length: 50 }, (_) => {
-    return {
-      value: 11,
-      name: 'A',
-      suit: 'Hearts',
-    }
-  })
-
-  const initialPlayerHand = [[]]
-  const initialDealerHand = []
-  const initialDeck = shuffleDeck(buildDecks(6))
-  const initialTestingDeck = buildStackedDeck1(100)
-  const initialButton = false
-  const initialAction = actions.dealPlayer
-  const initialDealerCardFaceDown = true
-  const initialInsuranceDisplay = false
-  const initialBlackjackDisplay = false
-  const initialPlayerHandIndex = 0
-  const initialPlayerChoice = null
-  const initialPlayerFeedback = userFeedBackResponse.default
-  const initialTotalPlayerHands = 0
-  const initialPlayerCorrectChoices = 0
   const delayTime = 200
+  const gameMode = gameModes.strategy
 
-  const [playerHands, setPlayerHands] = useState(initialPlayerHand)
-  const [dealerCards, setDealerCards] = useState(initialDealerHand)
-  const [deckOfCards, setDeckOfCards] = useState(testing ? initialTestingDeck : initialDeck)
-  const [disableButtons, setDisableButtons] = useState(initialButton)
-  const [action, setAction] = useState(initialAction)
-  const [dealCardFaceDown, setDealCardFaceDown] = useState(initialDealerCardFaceDown)
-  const [insuranceDisplayed, setInsuranceDisplay] = useState(initialInsuranceDisplay)
-  const [DisplayBlackJack, setDisplayBlackJack] = useState(initialBlackjackDisplay)
-  const [activeHandIndex, setActiveHandIndex] = useState(initialPlayerHandIndex)
-  const [playerChoice, setPlayerChoice] = useState(initialPlayerChoice)
-  const [playerFeedback, setPlayerFeedback] = useState(initialPlayerFeedback)
-  const [totalPlayerHands, setTotalPlayerHands] = useState(initialTotalPlayerHands)
-  const [totalPlayerCorrectChoices, setTotalPlayerCorrectChoices] = useState(initialPlayerCorrectChoices)
-
-  const handleChoice = (choice) => {
-    if (action === actions.standBy) {
-      setPlayerChoice(choice)
-      setTotalPlayerHands((prevAmount) => prevAmount + 1)
-      setAction(actions.checkStrategy)
-    }
-  }
-
-  const handleInsuranceAccepted = () => {
-    setAction(actions.insuranceAccepted)
-    setInsuranceDisplay(false)
-  }
-  const handleInsuranceDeclined = () => {
-    setAction(actions.insuranceDeclined)
-    setInsuranceDisplay(false)
-  }
-
-  const handleReset = () => {
-    setInsuranceDisplay(initialInsuranceDisplay)
-    setTotalPlayerHands(initialTotalPlayerHands)
-    setTotalPlayerCorrectChoices(initialPlayerCorrectChoices)
-  }
-
-  const nextRound = () => {
-    setDisableButtons(initialButton)
-  }
+  const {
+    playerHands,
+    dealerCards,
+    dealCardFaceDown,
+    activeHandIndex,
+    playerFeedback,
+    displayBlackJack,
+    insuranceDisplayed,
+    totalPlayerHands,
+    totalPlayerCorrectChoices,
+    disableButtons,
+    handleReset,
+    handleChoice,
+    handleInsuranceAccepted,
+    handleInsuranceDeclined,
+  } = useGame({ delayTime, gameMode })
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-700">
-      <div className="grid grid-cols-3 gap-0 grid-rows-2 w-[1255px] h-[855px] bg-green-700  overflow-hidden relative rounded-2xl ">
-        <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
+      <div className="grid grid-cols-1 p-4 gap-0 grid-rows-2 w-[1255px] h-[855px] bg-green-700  overflow-hidden relative rounded-2xl sm:grid-cols-3 ">
+        {/* Dealer and Player cards */}
 
-        <div className="col-start-2 row-start-2 flex space-x-10">
+        <div className="col-start-1 row-start-1 relative min-w-[300px] min-h-[400px] sm:col-start-2">
+          <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
+        </div>
+
+        <div className="col-start-1 row-start-1 flex space-x-10 sm:col-start-2 min-h-[400px] min-w-[300px] sm:row-start-2">
           {playerHands.map((hand) => {
-            return <PlayerCards key={nanoid()} cards={hand} action={action} />
+            return <PlayerCards key={nanoid()} cards={hand} />
           })}
         </div>
 
-        <div className="col-start-1 row-start-2 relative">
+        {/* Hand Totals */}
+
+        <div className="col-start-1 row-start-1 relative sm:row-start-2 ">
           <HandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />
         </div>
 
         <div className="col-start-1 row-start-1 relative">
           {testing && <HandTotal total={handTotal(dealerCards)} />}
         </div>
+
+        {/* Player Displays */}
+
         <div className="col-stat-3 row-stat-1">
           <PlayerAccuracy totalHands={totalPlayerHands} correctChoices={totalPlayerCorrectChoices} />
         </div>
@@ -116,10 +71,13 @@ const StrategyTraining = () => {
             handleInsuranceAccepted={handleInsuranceAccepted}
           />
         )}
-        {DisplayBlackJack && <BlackJack />}
+        {displayBlackJack && <BlackJack />}
         {playerFeedback && <PlayerFeedBack string={playerFeedback} />}
-        <div className="col-start-3 row-start-2 relative">
-          <div className="flex items-end flex-col">
+
+        {/* Buttons */}
+
+        <div className=" col-start-1 row-start-2 flex flex-col relative h-screen sm:col-start-3">
+          <div className="flex flex-col items-end pt-24 sm:pt-6">
             <Button onClick={() => handleChoice('H')} label={'Hit'} disabled={disableButtons} />
 
             <Button onClick={() => handleChoice('SP')} label={'Split'} disabled={disableButtons} />
@@ -133,8 +91,7 @@ const StrategyTraining = () => {
             <Button onClick={() => handleChoice('S')} label={'Stand'} disabled={disableButtons} />
 
             <Button onClick={() => handleChoice('SUR')} label={'Surrender'} />
-          </div>
-          <div className="absolute bottom-0 right-0">
+
             <Link to="/">
               <Button label={'Quit'} />
             </Link>

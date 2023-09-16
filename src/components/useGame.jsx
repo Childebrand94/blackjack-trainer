@@ -122,11 +122,13 @@ const useGame = ({ delayTime, gameMode }) => {
     setRoundCount((prevCount) => prevCount + 1)
     setActiveHandIndex(initialPlayerHandIndex)
     setPlayerHands(initialPlayerHand)
-    setDealerCards(initialDealerHand)
-    setDealCardFaceDown(initialDealerCardFaceDown)
-    setAction(initialAction)
-    setPlayerChoice(initialPlayerChoice)
-    setDisableButtons(initialButton)
+    setTimeout(() => {
+      setDealerCards(initialDealerHand)
+      setDealCardFaceDown(initialDealerCardFaceDown)
+      setAction(initialAction)
+      setPlayerChoice(initialPlayerChoice)
+      setDisableButtons(initialButton)
+    }, delayTime * 5)
   }
   const handlePlayerResponse = (userInput) => {
     if (parseInt(userInput.runningCount) === runningCount && parseInt(userInput.trueCount) === trueCount) {
@@ -261,7 +263,7 @@ const useGame = ({ delayTime, gameMode }) => {
               setAction(actions.startNextRound)
             }
           }
-        }, delayTime * 5)
+        }, delayTime * 6)
       },
       transitions: {
         dealerTurn: actions.dealerTurn,
@@ -459,7 +461,7 @@ const useGame = ({ delayTime, gameMode }) => {
       onEnter: () => {
         setTimeout(() => {
           nextRound()
-        }, delayTime * 1.5)
+        }, delayTime * 5)
       },
       transitions: {},
     },
