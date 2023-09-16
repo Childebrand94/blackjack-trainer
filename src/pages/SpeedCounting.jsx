@@ -1,19 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/playerCards'
-import { actions, gameModes, playerChoices, userFeedBackResponse } from '../functions/types'
-import {
-  buildDecks,
-  checkBust,
-  drawCard,
-  getHandType,
-  handTotal,
-  strategyCheck,
-  getRunningCount,
-  getTrueCount,
-  shuffleDeck,
-} from '../functions/pureFunctions'
+import { gameModes } from '../functions/types'
+import { handTotal, getRunningCount, getTrueCount } from '../functions/pureFunctions'
 import HandTotal from '../components/HandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
