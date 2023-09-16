@@ -120,6 +120,7 @@ export const strategyCheck = (handType, dealerCardTotal, playerHand) => {
       return handTotal(playerHand) > 20 ? 20 : handTotal(playerHand)
     }
   }
+
   // get player options as list
   const playerCardRanges = Object.keys(decisionMatrix[handType][dealerCardTotal])
 
@@ -136,7 +137,11 @@ export const strategyCheck = (handType, dealerCardTotal, playerHand) => {
 
   // if a match was found return choice
   if (rangeMatch) {
-    return decisionMatrix[handType][dealerCardTotal][rangeMatch]
+    const correctChoice = decisionMatrix[handType][dealerCardTotal][rangeMatch]
+    if (correctChoice === playerChoices.double && playerHand.length > 2) {
+      return playerChoices.hit
+    }
+    return correctChoice
   }
   // if error
   return `Error handType = ${handType} dealerCard = ${dealerCardTotal} playerHand = ${playerHand}`
