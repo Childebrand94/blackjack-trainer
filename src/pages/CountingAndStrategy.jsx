@@ -1,20 +1,8 @@
-import { useEffect, useState } from 'react'
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/playerCards'
-import { actions, gameModes, playerChoices, userFeedBackResponse } from '../functions/types'
-import {
-  buildDecks,
-  buildStackedDeck1,
-  checkBust,
-  drawCard,
-  getHandType,
-  handTotal,
-  shuffleDeck,
-  strategyCheck,
-  getRunningCount,
-  getTrueCount,
-} from '../functions/pureFunctions'
+import { gameModes } from '../functions/types'
+import { handTotal, getRunningCount, getTrueCount } from '../functions/pureFunctions'
 import HandTotal from '../components/HandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
@@ -31,21 +19,8 @@ import useGame from '../components/useGame'
 const testing = true
 
 const StrategyTraining = () => {
-  const testDeck = Array.from({ length: 50 }, (_) => {
-    return {
-      value: 11,
-      name: 'A',
-      suit: 'Hearts',
-    }
-  })
-
   const gameMode = gameModes.countingStrategy
-
   const delayTime = 200
-
-  const nextRound = () => {
-    setDisableButtons(initialButton)
-  }
   const {
     playerHands,
     dealerCards,
@@ -66,7 +41,7 @@ const StrategyTraining = () => {
     handlePlayerResponse,
     handleInsuranceAccepted,
     handleInsuranceDeclined,
-  } = useGame({ nextRound, delayTime, gameMode })
+  } = useGame({ delayTime, gameMode })
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-700">
@@ -88,11 +63,7 @@ const StrategyTraining = () => {
           <div className="flex flex-col items-end pt-24 sm:pt-6">
             <Button onClick={() => handleChoice('H')} label={'Hit'} disabled={disableButtons} />
             <Button onClick={() => handleChoice('SP')} label={'Split'} disabled={disableButtons} />
-            <Button
-              onClick={() => handleChoice('D')}
-              label={'Double'}
-              disabled={disableButtons || playerHands[activeHandIndex % playerHands.length].length > 2}
-            />
+            <Button onClick={() => handleChoice('D')} label={'Double'} disabled={disableButtons} />
             <Button onClick={() => handleChoice('S')} label={'Stand'} disabled={disableButtons} />
             <Button onClick={() => handleChoice('SUR')} label={'Surrender'} />
             <Button onClick={handleReset} label={'Reset'} />
@@ -118,14 +89,14 @@ const StrategyTraining = () => {
           <PlayerAccuracy totalHands={totalPlayerHands} correctChoices={totalPlayerCorrectChoices} />
           <DecksRemaining cardsDealt={dealtCards.length} />
           {testing && (
-            <div className="flex flex-col w-full sm:items-start">
+            <>
               <CountStats label={'Running Count'} stat={getRunningCount(dealtCards)} />
               <CountStats
                 label={'True Count'}
                 stat={getTrueCount(getRunningCount(dealtCards), deckOfCards.length / 52)}
               />
               <CountStats label={'Decks Remaining'} stat={(deckOfCards.length / 52).toFixed(2)} />
-            </div>
+            </>
           )}
         </div>
 

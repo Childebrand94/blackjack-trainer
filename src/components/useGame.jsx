@@ -13,7 +13,7 @@ import {
 } from '../functions/pureFunctions'
 import { useEffect, useState } from 'react'
 
-const useGame = ({ extraNextRound, delayTime, gameMode }) => {
+const useGame = ({ delayTime, gameMode }) => {
   const testing = true
 
   const initialPlayerHand = [[]]
@@ -126,7 +126,7 @@ const useGame = ({ extraNextRound, delayTime, gameMode }) => {
     setDealCardFaceDown(initialDealerCardFaceDown)
     setAction(initialAction)
     setPlayerChoice(initialPlayerChoice)
-    extraNextRound && extraNextRound()
+    setDisableButtons(initialButton)
   }
   const handlePlayerResponse = (userInput) => {
     if (parseInt(userInput.runningCount) === runningCount && parseInt(userInput.trueCount) === trueCount) {
@@ -220,23 +220,21 @@ const useGame = ({ extraNextRound, delayTime, gameMode }) => {
     checkDealerTurn: {
       onEnter: () => {
         // if active index is greater than player hands length check dealer total
-        if (activeHandIndex >= playerHands.length) {
-          setAction(actions.dealerTotalCheck)
-          // player has 21 set dealer turn
-        } else if (handTotal(playerHands[activeHandIndex]) === 21) {
-          setTimeout(() => {
-            setAction(actions.dealerTurn)
-          }, delayTime * 2)
-          // if player has 21 check dealer total delay for Blackjack pop up
-        } else if (handTotal(dealerCards) === 21) {
-          setTimeout(() => {
+        setTimeout(() => {
+          if (activeHandIndex >= playerHands.length) {
             setAction(actions.dealerTotalCheck)
-          }, delayTime * 2)
-        } else if (gameMode === gameModes.speedCounting) {
-          setAction(actions.checkStrategy)
-        } else {
-          setAction(actions.standBy)
-        }
+            // player has 21 set dealer turn
+          } else if (handTotal(playerHands[activeHandIndex]) === 21) {
+            setAction(actions.dealerTurn)
+            // if player has 21 check dealer total delay for Blackjack pop up
+          } else if (handTotal(dealerCards) === 21) {
+            setAction(actions.dealerTotalCheck)
+          } else if (gameMode === gameModes.speedCounting) {
+            setAction(actions.checkStrategy)
+          } else {
+            setAction(actions.standBy)
+          }
+        }, delayTime * 10)
       },
       transitions: {
         dealerTotalCheck: actions.dealerTotalCheck,
@@ -263,7 +261,7 @@ const useGame = ({ extraNextRound, delayTime, gameMode }) => {
               setAction(actions.startNextRound)
             }
           }
-        }, delayTime) * 10
+        }, delayTime * 5)
       },
       transitions: {
         dealerTurn: actions.dealerTurn,
@@ -283,7 +281,7 @@ const useGame = ({ extraNextRound, delayTime, gameMode }) => {
         setTimeout(() => {
           dealDealerCard()
           setAction(actions.dealerTotalCheck)
-        }, delayTime * 3)
+        }, delayTime * 8)
       },
       transitions: {
         dealerTotalCheck: actions.dealerTotalCheck,
@@ -315,18 +313,20 @@ const useGame = ({ extraNextRound, delayTime, gameMode }) => {
           setAction(actions.callPlayerAction)
         } else {
           // give the player feed back on decision, will not move game forward until right option is picked
-          setTimeout(() => {
-            if (playerChoice === correctChoice) {
-              setPlayerFeedback(userFeedBackResponse.correct)
-              setTotalPlayerCorrectChoices((prevAmount) => prevAmount + 1)
+          if (playerChoice === correctChoice) {
+            setPlayerFeedback(userFeedBackResponse.correct)
+            setTotalPlayerCorrectChoices((prevAmount) => prevAmount + 1)
+            setTimeout(() => {
               setPlayerFeedback(userFeedBackResponse.default)
               setAction(actions.callPlayerAction)
-            } else {
-              setPlayerFeedback(userFeedBackResponse.tryAgain)
+            }, delayTime * 3)
+          } else {
+            setPlayerFeedback(userFeedBackResponse.tryAgain)
+            setTimeout(() => {
               setPlayerFeedback(userFeedBackResponse.default)
               setAction(actions.standBy)
-            }
-          }, delayTime * 3)
+            }, delayTime * 3)
+          }
         }
       },
       transitions: {
@@ -423,26 +423,24 @@ const useGame = ({ extraNextRound, delayTime, gameMode }) => {
     },
     dealSplitHand: {
       onEnter: () => {
-        setTimeout(() => {
-          // No more hands
-          if (activeHandIndex > playerHands.length - 1) {
-            setAction(actions.dealerTotalCheck)
-            // Player has less than two cards
-          } else if (activeHand.length < 2) {
-            dealPlayerCard()
-            if (gameMode === gameModes.speedCounting) {
-              setAction(actions.checkStrategy)
-            } else {
-              setAction(actions.standBy)
-            }
+        // No more hands
+        if (activeHandIndex > playerHands.length - 1) {
+          setAction(actions.dealerTotalCheck)
+          // Player has less than two cards
+        } else if (activeHand.length < 2) {
+          dealPlayerCard()
+          if (gameMode === gameModes.speedCounting) {
+            setAction(actions.checkStrategy)
           } else {
-            if (gameMode === gameModes.speedCounting) {
-              setAction(actions.checkStrategy)
-            } else {
-              setAction(actions.standBy)
-            }
+            setAction(actions.standBy)
           }
-        }, delayTime * 0.8)
+        } else {
+          if (gameMode === gameModes.speedCounting) {
+            setAction(actions.checkStrategy)
+          } else {
+            setAction(actions.standBy)
+          }
+        }
       },
       transitions: {},
     },
