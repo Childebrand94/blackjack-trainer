@@ -1,3 +1,4 @@
+
 export const actions = {
   standBy: 'standBy',
   dealPlayer: 'dealPlayer',
@@ -44,4 +45,10 @@ export const userFeedBackResponse = {
   tryAgain: 'Try agin',
   reshuffle: 'No More Cards Reshuffling Shoe',
   default: '',
+}
+
+export const gameModes = {
+  speedCounting: 'speedCounting',
+  countingStrategy: 'countingStrategy',
+  strategy: 'strategy',
 }

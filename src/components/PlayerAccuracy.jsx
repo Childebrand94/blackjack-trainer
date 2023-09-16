@@ -1,6 +1,6 @@
 const PlayerAccuracy = ({ totalHands, correctChoices }) => {
   return (
-    <div className="bg-gray-400 opacity-50 flex justify-center flex-col text-center rounded-xl w-1/2">
+    <div className="bg-gray-400 opacity-50 flex justify-center flex-col text-center p-1 w-[150px] rounded-xl">
       <p>{`Total Hands: ${totalHands}`}</p>
       <p>{`Correct Hands: ${correctChoices}`}</p>
       <p>
