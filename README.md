@@ -63,6 +63,7 @@ This repository hosts the source code for a comprehensive Blackjack Trainer app 
 
 - [![React][React.js]][React-url]
 - [![Tailwind CSS][TailwindCSS]][TailwindCSS-url]
+- [![Vite][Vite]][Vite-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -137,8 +138,6 @@ Realistic Scenario Mode combines the lessons learned from Basic Strategy and Hig
 
 ### General Tips
 
-- **Feedback**: Pay close attention to the trainer's feedback and recommendations after each hand or session to understand your strengths and areas for improvement.
-
 - **Practice Regularly**: Consistent practice is key to mastering Blackjack. Spend time in each mode to hone your skills and increase your chances of success in real casino games.
 
 Feel free to reach out with any questions, feedback, or issues you encounter during your training. Happy learning and good luck at the Blackjack tables!
@@ -181,24 +180,11 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTACT -->
-
-## Contact
-
-Project Link: [https://github.com/Childebrand94/blackjack-trainer](https://github.com/Childebrand94/blackjack-trainer)
-[![LinkedIn][LinkedIn]][LinkedIn-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- MARKDOWN LINKS & IMAGES -->
 
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
 [TailwindCSS]: https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white
 [TailwindCSS-url]: https://v2.tailwindcss.com/docs
-[LinkedIn]: https://img.shields.io/badge/linkedin-%230077B5.svg?style=for-the-badge&logo=linkedin&logoColor=white
-[LinkedIn-url]: https://www.linkedin.com/in/chris-hildebrand-baaa64185/
+[Vite]: https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white
+[Vite-url]: https://vitejs.dev/
