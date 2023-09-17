@@ -1,51 +1,25 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
-
 <a name="readme-top"></a>
-
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/Childebrand94/blackjack-trainer">
+    <img src="./src/assets/cards-icon.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Best-README-Template</h3>
+  <h3 align="center">21 Genius Academy</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    Great way to learn card counting and basic Blackjack Strategy!
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/Childebrand94/blackjack-trainer"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://github.com/Childebrand94/blackjack-trainer">View Demo</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Report Bug</a>
+    <a href="https://github.com/Childebrand94/blackjack-trainer/issues">Report Bug</a>
     ·
-    <a href="https://github.com/othneildrew/Best-README-Template/issues">Request Feature</a>
+    <a href="https://github.com/Childebrand94/blackjack-trainer/issues">Request Feature</a>
   </p>
 </div>
 
@@ -87,9 +61,8 @@ This repository hosts the source code for a comprehensive Blackjack Trainer app 
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
 - [![React][React.js]][React-url]
+- [![Tailwind CSS][TailwindCSS]][TailwindCSS-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -113,29 +86,64 @@ This is an example of how to list things you need to use the software and how to
 
 _Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
-   git clone https://github.com/your_username_/Project-Name.git
+   git clone https://github.com/Childebrand94/blackjack-trainer
    ```
-3. Install NPM packages
+2. Install NPM packages
    ```sh
    npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API'
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- USAGE EXAMPLES -->
-
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Welcome to the Blackjack Trainer! This trainer is designed to help you improve your Blackjack skills through three different modes: Basic Strategy, High-Low Card Counting, and Realistic Scenario. Here's how to get started with each mode:
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+### Basic Strategy Mode
+
+In Basic Strategy Mode, you'll learn the fundamental strategy for playing Blackjack optimally. Follow these steps:
+
+1. **Start the Trainer**: Run the trainer application and select "Basic Strategy Mode."
+
+2. **Learn the Rules**: Familiarize yourself with the Blackjack rules provided within the trainer.
+
+3. **Practice**: Begin playing hands using the trainer's simulated Blackjack game. You'll receive guidance on the best moves based on basic strategy principles.
+
+4. **Review**: After each hand, review the trainer's feedback to understand why certain decisions were recommended.
+
+### High-Low Card Counting Mode
+
+In High-Low Card Counting Mode, you'll dive into the world of card counting to gain an advantage at Blackjack. Here's how to use this mode:
+
+1. **Start the Trainer**: Launch the trainer application and select "High-Low Card Counting Mode."
+
+2. **Learn Card Counting**: Familiarize yourself with the principles of the High-Low card counting system provided within the trainer.
+
+3. **Practice Card Counting**: Use the trainer to practice card counting in a simulated Blackjack environment.
+
+4. **Refine Your Skills**: Keep practicing to improve your card counting abilities and increase your edge against the house.
+
+### Realistic Scenario Mode
+
+Realistic Scenario Mode combines the lessons learned from Basic Strategy and High-Low Card Counting to simulate a more authentic Blackjack experience:
+
+1. **Start the Trainer**: Run the trainer application and select "Realistic Scenario Mode."
+
+2. **Apply What You've Learned**: Utilize your knowledge of basic strategy and card counting in this mode to make decisions as you would in a real casino.
+
+3. **Test Your Skills**: Face off against the trainer's AI dealer, which emulates real-world casino gameplay. Practice your decision-making and betting strategies in a true-to-life setting.
+
+4. **Track Progress**: Monitor your progress over time to see how your skills improve in real-world scenarios.
+
+### General Tips
+
+- **Feedback**: Pay close attention to the trainer's feedback and recommendations after each hand or session to understand your strengths and areas for improvement.
+
+- **Practice Regularly**: Consistent practice is key to mastering Blackjack. Spend time in each mode to hone your skills and increase your chances of success in real casino games.
+
+Feel free to reach out with any questions, feedback, or issues you encounter during your training. Happy learning and good luck at the Blackjack tables!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -143,15 +151,20 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## Roadmap
 
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
-- [ ] Multi-language Support
-  - [ ] Chinese
-  - [ ] Spanish
+### Future Updates
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+- [ ] Implement Card Dealing Animation
+- [ ] Create a Settings Menu to Customize Strategy to Adhere to Different Casino Rules
+- [ ] Add Additional Players
+- [ ] Develop an Enhanced Betting System
+
+### Feedback and Contributions
+
+We value your feedback and encourage you to report any issues, suggest features, or contribute to the development of this project. Together, we can make this Blackjack Trainer the ultimate resource for mastering the game.
+
+Please note that this roadmap is subject to change, and the timeline for each feature may vary. We appreciate your support and look forward to improving and expanding our Blackjack Trainer based on your needs and suggestions.
+
+See the [open issues](https://github.com/Childebrand94/blackjack-trainer/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -172,21 +185,11 @@ Don't forget to give the project a star! Thanks again!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- LICENSE -->
-
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 <!-- CONTACT -->
 
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/your_username/repo_name](https://github.com/Childebrand94/blackjack-trainer)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -210,32 +213,7 @@ Use this space to list resources you find helpful and would like to give credit 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
-[contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
-[forks-url]: https://github.com/othneildrew/Best-README-Template/network/members
-[stars-shield]: https://img.shields.io/github/stars/othneildrew/Best-README-Template.svg?style=for-the-badge
-[stars-url]: https://github.com/othneildrew/Best-README-Template/stargazers
-[issues-shield]: https://img.shields.io/github/issues/othneildrew/Best-README-Template.svg?style=for-the-badge
-[issues-url]: https://github.com/othneildrew/Best-README-Template/issues
-[license-shield]: https://img.shields.io/github/license/othneildrew/Best-README-Template.svg?style=for-the-badge
-[license-url]: https://github.com/othneildrew/Best-README-Template/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
-[product-screenshot]: images/screenshot.png
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
 [React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com
+[TailwindCSS]: https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white
+[TailwindCSS-url]: https://v2.tailwindcss.com/docs
