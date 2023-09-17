@@ -70,21 +70,15 @@ This repository hosts the source code for a comprehensive Blackjack Trainer app 
 
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+Welcome to the Blackjack Trainer! This section will guide you through the steps to get started with the trainer and begin honing your Blackjack skills.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
+Before you begin, ensure you have the following prerequisites installed:
 
-- npm
-  ```sh
-  npm install npm@latest -g
-  ```
+- [Node.js](https://nodejs.org/en/download/): You'll need Node.js to run the trainer.
 
 ### Installation
-
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
 1. Clone the repo
    ```sh
@@ -93,6 +87,12 @@ _Below is an example of how you can instruct your audience on installing and set
 2. Install NPM packages
    ```sh
    npm install
+   ```
+3. Run the file
+   ```sh
+   npm run dev
+   ```
+
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -189,7 +189,7 @@ Don't forget to give the project a star! Thanks again!
 
 ## Contact
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/Childebrand94/blackjack-trainer)
+Project Link: [https://github.com/Childebrand94/blackjack-trainer](https://github.com/Childebrand94/blackjack-trainer)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
