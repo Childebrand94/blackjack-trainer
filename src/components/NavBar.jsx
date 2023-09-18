@@ -1,33 +1,40 @@
-import { Link } from 'react-router-dom' // If you're using React Router
+import { Link } from 'react-router-dom'
+import React, { useState } from 'react'
 
 const NavBar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
+
   return (
     <nav className="bg-gray-800 p-4">
-      <div className="container mx-auto flex items-center justify-between">
-        <Link to="/" className="text-white font-semibold text-xl">
+      <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
+        <Link to="/" className="text-white font-semibold text-xl mx-2">
           BlackJack Trainer
         </Link>
-        <ul className="flex space-x-7">
+        <div className="md:hidden">
+          <button onClick={toggleMobileMenu} className="text-white py-4 hover:text-gray-300">
+            Game Modes
+          </button>
+        </div>
+        <ul className={`${isMobileMenuOpen ? 'block' : 'hidden md:flex'} space-y-2 md:space-y-0 md:space-x-7`}>
           <li>
             <Link to="/StrategyTraining" className="text-white hover:text-gray-300">
-              Strategy Training
+              Basic Strategy Mode
             </Link>
           </li>
           <li>
             <Link to="/SpeedCounting" className="text-white hover:text-gray-300">
-              Speed Counting
+              High-Low Card Counting Mode
             </Link>
           </li>
           <li>
             <Link to="/CountingAndStrategy" className="text-white hover:text-gray-300">
-              Counting and Strategy
+              Realistic Scenario Mode
             </Link>
           </li>
-          {/* <li>
-            <Link to="/Settings" className="text-white hover:text-gray-300">
-              Settings
-            </Link>
-          </li> */}
         </ul>
       </div>
     </nav>
