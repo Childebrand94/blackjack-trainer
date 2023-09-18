@@ -1,6 +1,6 @@
 import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
-import PlayerCards from '../components/playerCards'
+import PlayerCards from '../components/PlayerCards'
 import { gameModes } from '../functions/types'
 import { handTotal } from '../functions/pureFunctions'
 import HandTotal from '../components/HandTotal'
