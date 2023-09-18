@@ -16,12 +16,16 @@ import TestPlayer from '../components/TestPlayer'
 import TestPlayerResponse from '../components/TestPlayerResponse'
 import useGame from '../components/useGame'
 import HowToPlay from '../components/HowToPlay'
+import { instructionalText } from '../components/instructionalText'
 
 const testing = true
 
 const StrategyTraining = () => {
   const gameMode = gameModes.countingStrategy
   const delayTime = 200
+  const instructionsHeading = instructionalText[gameMode].heading
+  const instructions = instructionalText[gameMode].instructions
+
   const {
     playerHands,
     dealerCards,
@@ -37,11 +41,13 @@ const StrategyTraining = () => {
     totalPlayerHands,
     totalPlayerCorrectChoices,
     disableButtons,
+    isInstructionsOpen,
     handleReset,
     handleChoice,
     handlePlayerResponse,
     handleInsuranceAccepted,
     handleInsuranceDeclined,
+    toggleInstructions,
   } = useGame({ delayTime, gameMode })
 
   return (
@@ -127,6 +133,9 @@ const StrategyTraining = () => {
             runningCount={getRunningCount(dealtCards)}
             trueCount={getTrueCount(getRunningCount(dealtCards), deckOfCards.length / 52)}
           />
+        )}
+        {isInstructionsOpen && (
+          <HowToPlay onClick={toggleInstructions} heading={instructionsHeading} instructions={instructions} />
         )}
       </div>
     </div>

@@ -12,11 +12,14 @@ import PlayerFeedBack from '../components/PlayerFeedBack'
 import PlayerAccuracy from '../components/PlayerAccuracy'
 import useGame from '../components/useGame'
 import HowToPlay from '../components/HowToPlay'
+import { instructionalText } from '../components/instructionalText'
 const testing = true
 
 const StrategyTraining = () => {
   const delayTime = 180
   const gameMode = gameModes.strategy
+  const instructionsHeading = instructionalText[gameMode].heading
+  const instructions = instructionalText[gameMode].instructions
 
   const {
     playerHands,
@@ -86,7 +89,9 @@ const StrategyTraining = () => {
             <Button onClick={handleReset} label={'Reset'} />
           </div>
         </div>
-        {isInstructionsOpen && <HowToPlay onClick={toggleInstructions} />}
+        {isInstructionsOpen && (
+          <HowToPlay onClick={toggleInstructions} heading={instructionsHeading} instructions={instructions} />
+        )}
       </div>
     </div>
   )

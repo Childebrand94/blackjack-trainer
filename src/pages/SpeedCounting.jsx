@@ -13,6 +13,8 @@ import CountStats from '../components/CountStats'
 import TestPlayer from '../components/TestPlayer'
 import TestPlayerResponse from '../components/TestPlayerResponse'
 import useGame from '../components/useGame'
+import { instructionalText } from '../components/instructionalText'
+import HowToPlay from '../components/HowToPlay'
 
 const testing = true
 
@@ -20,6 +22,8 @@ const SpeedCounting = () => {
   const initialPauseState = true
   const delayTime = 250
   const gameMode = gameModes.speedCounting
+  const instructionsHeading = instructionalText[gameMode].heading
+  const instructions = instructionalText[gameMode].instructions
 
   const [paused, setPaused] = useState(initialPauseState)
 
@@ -38,8 +42,10 @@ const SpeedCounting = () => {
     correctPlayerResponse,
     testPlayerDisplay,
     action,
+    isInstructionsOpen,
     handleReset,
     handlePlayerResponse,
+    toggleInstructions,
   } = useGame({ paused, delayTime, gameMode })
 
   return (
@@ -112,6 +118,9 @@ const SpeedCounting = () => {
             <Button onClick={handleReset} label={'Reset'} />
           </div>
         </div>
+        {isInstructionsOpen && (
+          <HowToPlay onClick={toggleInstructions} heading={instructionsHeading} instructions={instructions} />
+        )}
       </div>
     </div>
   )
