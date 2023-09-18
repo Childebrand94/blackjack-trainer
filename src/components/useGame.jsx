@@ -57,9 +57,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
   const [disableButtons, setDisableButtons] = useState(initialButton)
   const [totalPlayerHands, setTotalPlayerHands] = useState(initialTotalPlayerHands)
   const [totalPlayerCorrectChoices, setTotalPlayerCorrectChoices] = useState(initialPlayerCorrectChoices)
-
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(true)
-
   const activeHand = playerHands[activeHandIndex % playerHands.length]
 
   if (deckOfCards.length < 10) {
@@ -158,6 +156,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
     setRunningCount(currentRunningCount)
     setTrueCount(getTrueCount(currentRunningCount, deckOfCards.length / 52))
   }, [dealtCards])
+
   const stateMachine = {
     dealPlayer: {
       onEnter: () => {
