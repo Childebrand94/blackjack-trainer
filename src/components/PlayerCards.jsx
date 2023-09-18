@@ -15,7 +15,7 @@ const PlayerCards = ({ cards }) => {
           key={nanoid()}
           style={getImageStyle(card, index)}
           className={`absolute transform ${card.double === true ? 'rotate-90' : ''}`}
-          src={`src/assets/Cards/card${card.suit}${card.name}.png`}
+          src={`/assets/Cards/card${card.suit}${card.name}.png`}
         />
       ))}
     </div>

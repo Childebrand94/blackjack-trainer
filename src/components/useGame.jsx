@@ -31,7 +31,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
   const initialRoundCount = 0
   const initialCount = 0
   const initialResponse = userFeedBackResponse.default
-  const roundsToTest = 2
+  const roundsToTest = 1
   const initialBlackjackDisplay = false
   const initialInsuranceDisplay = false
   const initialTotalPlayerHands = 0
@@ -86,7 +86,6 @@ const useGame = ({ paused, delayTime, gameMode }) => {
     setDealtCards((prevCards) => [...prevCards, card])
   }
   const handleChoice = (choice) => {
-    console.log('click')
     if (action === actions.standBy) {
       setPlayerChoice(choice)
       setTotalPlayerHands((prevAmount) => prevAmount + 1)
@@ -514,13 +513,15 @@ const useGame = ({ paused, delayTime, gameMode }) => {
     },
   }
   const handleStateTransition = () => {
-    console.log(action)
+    if (testing) {
+      console.log(action)
+    }
     const currentState = stateMachine[action]
 
     if (currentState) {
       currentState.onEnter()
     } else {
-      console.log(`${action} not found.`)
+      console.log(`Error ${action} not found.`)
     }
   }
   useEffect(() => {
@@ -541,7 +542,6 @@ const useGame = ({ paused, delayTime, gameMode }) => {
     displayBlackJack,
     testPlayerDisplay,
     insuranceDisplayed,
-    testPlayerDisplay,
     disableButtons,
     totalPlayerHands,
     totalPlayerCorrectChoices,

@@ -18,7 +18,7 @@ import useGame from '../components/useGame'
 import HowToPlay from '../components/HowToPlay'
 import { instructionalText } from '../components/instructionalText'
 
-const testing = true
+const testing = false
 
 const StrategyTraining = () => {
   const gameMode = gameModes.countingStrategy

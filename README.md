@@ -4,7 +4,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Childebrand94/blackjack-trainer">
-    <img src="./src/assets/blackjack.png" alt="Logo" width="80" height="80">
+    <img src="/assets/blackjack.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">21 Genius Academy</h3>

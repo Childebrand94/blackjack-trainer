@@ -16,7 +16,7 @@ import useGame from '../components/useGame'
 import { instructionalText } from '../components/instructionalText'
 import HowToPlay from '../components/HowToPlay'
 
-const testing = true
+const testing = false
 
 const SpeedCounting = () => {
   const initialPauseState = true
@@ -82,7 +82,7 @@ const SpeedCounting = () => {
         {/* HandTotals */}
 
         <div className="col-start-1 row-start-1 relative sm:row-start-2 mt-14 sm:mt-0  ">
-          <HandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />
+          {testing && <HandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />}
         </div>
 
         <div className="col-start-1 row-start-1 relative">

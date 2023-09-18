@@ -22,8 +22,8 @@ const DealerCards = ({ cards, faceDown }) => {
             className="absolute"
             src={
               faceDown && index === 0
-                ? 'src/assets/Cards/cardBack_red1.png'
-                : `src/assets/Cards/card${card.suit}${card.name}.png`
+                ? '/assets/Cards/cardBack_red1.png'
+                : `/assets/Cards/card${card.suit}${card.name}.png`
             }
           />
         )
