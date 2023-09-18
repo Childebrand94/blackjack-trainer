@@ -8,7 +8,7 @@ import HandTotal from '../components/HandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 import DecksRemaining from '../components/DecksRemaining'
-import PlayerFeedBack from '../components/PlayerFeedBack'
+import InteractiveFeedback from '../components/InteractiveFeedback'
 import CountStats from '../components/CountStats'
 import TestPlayer from '../components/TestPlayer'
 import TestPlayerResponse from '../components/TestPlayerResponse'
@@ -91,7 +91,7 @@ const SpeedCounting = () => {
 
         {/* Test Display */}
 
-        {playerFeedback && <PlayerFeedBack string={playerFeedback} />}
+        {playerFeedback && <InteractiveFeedback string={playerFeedback} />}
         {testPlayerDisplay && (
           <TestPlayer
             handlePlayerResponse={handlePlayerResponse}

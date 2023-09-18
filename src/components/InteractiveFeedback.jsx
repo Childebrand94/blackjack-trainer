@@ -1,4 +1,4 @@
-const PlayerFeedBack = ({ string }) => {
+const InteractiveFeedback = ({ string }) => {
   return (
     <div className="bg-gray-400 flex justify-center text-center rounded-xl absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
       <div className="p-6">
@@ -7,4 +7,4 @@ const PlayerFeedBack = ({ string }) => {
     </div>
   )
 }
-export default PlayerFeedBack
+export default InteractiveFeedback

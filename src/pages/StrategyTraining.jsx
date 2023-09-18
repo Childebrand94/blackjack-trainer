@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
 import Insurance from '../components/Insurance'
 import BlackJack from '../components/BlackJack'
-import PlayerFeedBack from '../components/PlayerFeedBack'
+import InteractiveFeedback from '../components/InteractiveFeedback'
 import PlayerAccuracy from '../components/PlayerAccuracy'
 import useGame from '../components/useGame'
 import HowToPlay from '../components/HowToPlay'
@@ -70,7 +70,7 @@ const StrategyTraining = () => {
           />
         )}
         {displayBlackJack && <BlackJack />}
-        {playerFeedback && <PlayerFeedBack string={playerFeedback} />}
+        {playerFeedback && <InteractiveFeedback string={playerFeedback} />}
         {/* Buttons */}
         <div className=" col-start-1 row-start-2 flex flex-col relative h-screen sm:col-start-3">
           <div className="flex flex-col items-end pt-16 sm:pt-6">
