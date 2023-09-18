@@ -9,7 +9,7 @@ const NavBar = () => {
   }
 
   return (
-    <nav className="bg-gray-800 p-4">
+    <nav className="bg-gray-800 p-6 absolute top-0 z-10 w-screen">
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-between">
         <Link to="/" className="text-white font-semibold text-xl mx-2">
           BlackJack Trainer
