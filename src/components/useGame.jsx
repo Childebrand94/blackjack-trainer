@@ -58,6 +58,8 @@ const useGame = ({ paused, delayTime, gameMode }) => {
   const [totalPlayerHands, setTotalPlayerHands] = useState(initialTotalPlayerHands)
   const [totalPlayerCorrectChoices, setTotalPlayerCorrectChoices] = useState(initialPlayerCorrectChoices)
 
+  const [isInstructionsOpen, setIsInstructionsOpen] = useState(true)
+
   const activeHand = playerHands[activeHandIndex % playerHands.length]
 
   if (deckOfCards.length < 10) {
@@ -147,6 +149,10 @@ const useGame = ({ paused, delayTime, gameMode }) => {
       }, delayTime * 3)
     }
   }
+  const toggleInstructions = () => {
+    setIsInstructionsOpen(!isInstructionsOpen)
+  }
+
   useEffect(() => {
     const currentRunningCount = getRunningCount(dealtCards)
     setRunningCount(currentRunningCount)
@@ -541,11 +547,13 @@ const useGame = ({ paused, delayTime, gameMode }) => {
     totalPlayerHands,
     totalPlayerCorrectChoices,
     action,
+    isInstructionsOpen,
     handleReset,
     handleChoice,
     handlePlayerResponse,
     handleInsuranceAccepted,
     handleInsuranceDeclined,
+    toggleInstructions,
   }
 }
 

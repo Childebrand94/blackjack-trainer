@@ -15,6 +15,7 @@ import DecksRemaining from '../components/DecksRemaining'
 import TestPlayer from '../components/TestPlayer'
 import TestPlayerResponse from '../components/TestPlayerResponse'
 import useGame from '../components/useGame'
+import HowToPlay from '../components/HowToPlay'
 
 const testing = true
 
