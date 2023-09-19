@@ -10,14 +10,14 @@ const PlayerCards = ({ cards }) => {
 
   return (
     <div className="relative w-1/2">
-      {cards.map((card, index) => (
-        <img
-          key={nanoid()}
-          style={getImageStyle(card, index)}
-          className={`absolute transform ${card.double === true ? 'rotate-90' : ''}`}
-          src={`/assets/Cards/card${card.suit}${card.name}.png`}
-        />
-      ))}
+    {cards.map((card, index) => (
+      <img
+        key={nanoid()}
+        style={getImageStyle(card, index)}
+        className={`absolute transform ${card.double === true ? 'rotate-90' : ''}`}
+        src={`${new URL('/assets/Cards', import.meta.url).href}/card${card.suit}${card.name}.png`}
+      />
+    ))}
     </div>
   )
 }
