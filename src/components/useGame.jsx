@@ -14,14 +14,14 @@ import {
 import { useEffect, useState } from 'react'
 
 const useGame = ({ paused, delayTime, gameMode }) => {
-  const testing = true
+  const testing = false
 
   const initialPlayerHand = [[]]
   const initialDealerHand = []
   const initialDealtCards = []
   const initialDeckSize = 4
   const initialDeck = shuffleDeck(buildDecks(initialDeckSize))
-  const initialTestingDeck = shuffleDeck(buildDecks(initialDeckSize))
+  const initialTestingDeck = buildStackedDeck1(100)
   const initialAction = actions.dealPlayer
   const initialDealerCardFaceDown = true
   const initialPlayerHandIndex = 0
@@ -40,7 +40,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
 
   const [playerHands, setPlayerHands] = useState(initialPlayerHand)
   const [dealerCards, setDealerCards] = useState(initialDealerHand)
-  const [deckOfCards, setDeckOfCards] = useState(testing ? shuffleDeck(buildDecks(6)) : initialDeck)
+  const [deckOfCards, setDeckOfCards] = useState(testing ? initialTestingDeck : initialDeck)
   const [action, setAction] = useState(initialAction)
   const [dealCardFaceDown, setDealCardFaceDown] = useState(initialDealerCardFaceDown)
   const [activeHandIndex, setActiveHandIndex] = useState(initialPlayerHandIndex)
@@ -58,7 +58,6 @@ const useGame = ({ paused, delayTime, gameMode }) => {
   const [totalPlayerHands, setTotalPlayerHands] = useState(initialTotalPlayerHands)
   const [totalPlayerCorrectChoices, setTotalPlayerCorrectChoices] = useState(initialPlayerCorrectChoices)
   const [isInstructionsOpen, setIsInstructionsOpen] = useState(true)
-  const activeHand = playerHands[activeHandIndex % playerHands.length]
 
   if (deckOfCards.length < 10) {
     setDeckOfCards(initialDeck)
@@ -136,14 +135,14 @@ const useGame = ({ paused, delayTime, gameMode }) => {
       setTimeout(() => {
         setCorrectPlayerResponse(userFeedBackResponse.default)
         setAction(actions.startNextRound)
-      }, delayTime * 2)
+      }, delayTime * 3)
     } else {
       setTestPlayerDisplay(false)
       setCorrectPlayerResponse(userFeedBackResponse.incorrect)
       setTimeout(() => {
         setCorrectPlayerResponse(userFeedBackResponse.default)
         setAction(actions.startNextRound)
-      }, delayTime * 3)
+      }, delayTime * 6)
     }
   }
   const toggleInstructions = () => {
@@ -348,7 +347,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
               setAction(actions.stand)
               setPlayerChoice(initialPlayerChoice)
             } else if (playerChoice === playerChoices.split) {
-              if (activeHand[0].value === activeHand[1].value) {
+              if (playerHands[activeHandIndex][0].value === playerHands[activeHandIndex][1].value) {
                 setAction(actions.split)
                 setPlayerChoice(initialPlayerChoice)
               }
@@ -362,7 +361,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
               console.log('Error no match for Player Choice')
             }
           },
-          gameMode === gameModes.speedCounting ? delayTime * 2 : delayTime * 0
+          gameMode === gameModes.speedCounting ? delayTime * 5 : delayTime * 0
         )
       },
       transitions: {
@@ -393,23 +392,27 @@ const useGame = ({ paused, delayTime, gameMode }) => {
     split: {
       onEnter: () => {
         setPlayerHands((prevHands) => {
-          setTimeout(() => {
-            return prevHands.flatMap((hand, index) => {
-              if (activeHandIndex === index) {
-                return [[hand[0]], [hand[1]]]
-              }
-              return [hand]
-            })
+          return prevHands.flatMap((hand, index) => {
+            if (activeHandIndex === index) {
+              return [[hand[0]], [hand[1]]]
+            }
+            return [hand]
           })
+        })
 
+        setTimeout(() => {
           dealPlayerCard()
           if (gameMode === gameModes.speedCounting) {
             setAction(actions.checkStrategy)
+          } else {
+            setAction(actions.standBy)
           }
-          setAction(actions.standBy)
         }, delayTime * 2)
       },
-      transitions: {},
+      transitions: {
+        checkStrategy: actions.checkStrategy,
+        standBy: actions.standBy,
+      },
     },
     double: {
       onEnter: () => {
@@ -433,7 +436,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
         if (activeHandIndex > playerHands.length - 1) {
           setAction(actions.dealerTotalCheck)
           // Player has less than two cards
-        } else if (activeHand.length < 2) {
+        } else if (playerHands[activeHandIndex % playerHands.length].length < 2) {
           dealPlayerCard()
           if (gameMode === gameModes.speedCounting) {
             setAction(actions.checkStrategy)
@@ -452,7 +455,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
     },
     checkBust: {
       onEnter: () => {
-        if (checkBust(activeHand)) {
+        if (checkBust(playerHands[activeHandIndex % playerHands.length])) {
           setActiveHandIndex((prevItem) => prevItem + 1)
         }
         setAction(actions.dealSplitHand)

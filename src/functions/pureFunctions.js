@@ -34,14 +34,14 @@ export const buildStackedDeck1 = (amount) => {
       if (index % 2 === 0) {
         // dealers hand
         return [
-          { name: '8', value: 8, suit: 'Spades' },
-          { name: 10, value: 10, suit: 'Spades' },
+          { name: 'A', value: 11, suit: 'Spades' },
+          { name: 5, value: 5, suit: 'Spades' },
         ]
       } else {
         // players hand
         return [
-          { name: '3', value: 3, suit: 'Spades' },
-          { name: 'J', value: 10, suit: 'Spades' },
+          { name: 'A', value: 11, suit: 'Spades' },
+          { name: 'A', value: 11, suit: 'Spades' },
         ]
       }
     }).flat()
@@ -147,16 +147,7 @@ export const strategyCheck = (handType, dealerCardTotal, playerHand) => {
   return `Error handType = ${handType} dealerCard = ${dealerCardTotal} playerHand = ${playerHand}`
 }
 
-// console.log(
-//   strategyCheck('hard', 10, [
-//     { name: 5, value: 5, suite: 'Spade' },
-//     { name: 5, value: 5, suite: 'Spade' },
-//     { name: 3, value: 3, suite: 'Spade' },
-//     { name: 4, value: 4, suite: 'Spade' },
-//   ])
-// )
-
-// keepCount :: Card[] -> Number
+// getRunningCount :: Card[] -> Number
 export const getRunningCount = (hand) => {
   if (!hand) return 0
   return hand.reduce((acc, card) => {

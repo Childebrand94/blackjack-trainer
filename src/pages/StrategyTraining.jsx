@@ -13,9 +13,10 @@ import PlayerAccuracy from '../components/PlayerAccuracy'
 import useGame from '../components/useGame'
 import HowToPlay from '../components/HowToPlay'
 import { instructionalText } from '../components/instructionalText'
-const testing = true
 
 const StrategyTraining = () => {
+  const testing = false
+
   const delayTime = 180
   const gameMode = gameModes.strategy
   const instructionsHeading = instructionalText[gameMode].heading
