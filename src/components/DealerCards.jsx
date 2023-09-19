@@ -22,8 +22,8 @@ const DealerCards = ({ cards, faceDown }) => {
             className="absolute"
             src={
               faceDown && index === 0
-                ? '/assets/Cards/cardBack_red1.png'
-                : `/assets/Cards/card${card.suit}${card.name}.png`
+                ? new URL('/assets/Cards/cardBack_red1.png', import.meta.url).href
+                : `${new URL('/assets/Cards', import.meta.url).href}/card${card.suit}${card.name}.png`
             }
           />
         )
