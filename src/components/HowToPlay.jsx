@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 const HowToPlay = ({ onClick, heading, instructions }) => {
   return (
-    <div className="bg-gray-400 p-6 rounded-lg shadow-md text-black absolute top-1/4 left-1/4 w-3/5 text-center">
+    <div className="bg-gray-400 p-6 rounded-lg shadow-md text-black sm:transform sm:-translate-x-1/2 absolute top-1/4 sm:w-4/5 sm:left-1/2 text-center">
       <h3 className="font-semibold text-2xl mx-2">{heading}</h3>
       <article className="p-2">{instructions}</article>
       <div className="w-full flex space-x-10 justify-center pt-4">

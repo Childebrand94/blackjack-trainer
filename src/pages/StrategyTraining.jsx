@@ -13,6 +13,8 @@ import PlayerAccuracy from '../components/PlayerAccuracy'
 import useGame from '../components/useGame'
 import HowToPlay from '../components/HowToPlay'
 import { instructionalText } from '../components/instructionalText'
+import NavBar from '../components/NavBar'
+import Footer from '../components/Footer'
 
 const StrategyTraining = () => {
   const testing = false
@@ -43,6 +45,7 @@ const StrategyTraining = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-700">
+      <NavBar />
       <div className="grid grid-cols-1 p-4 gap-0 grid-rows-2 w-[1255px] h-[855px] bg-green-700  overflow-hidden relative rounded-2xl sm:grid-cols-3 ">
         {/* Dealer and Player cards */}
         <div className="col-start-1 row-start-1 relative min-w-[300px] min-h-[400px] sm:col-start-2">
@@ -60,21 +63,11 @@ const StrategyTraining = () => {
         <div className="col-start-1 row-start-1 relative">
           {testing && <HandTotal total={handTotal(dealerCards)} />}
         </div>
-        {/* Player Displays */}
-        <div className="col-stat-3 row-stat-1">
-          <PlayerAccuracy totalHands={totalPlayerHands} correctChoices={totalPlayerCorrectChoices} />
-        </div>
-        {insuranceDisplayed && (
-          <Insurance
-            handleInsuranceDeclined={handleInsuranceDeclined}
-            handleInsuranceAccepted={handleInsuranceAccepted}
-          />
-        )}
-        {displayBlackJack && <BlackJack />}
-        {playerFeedback && <InteractiveFeedback string={playerFeedback} />}
+
         {/* Buttons */}
+
         <div className=" col-start-1 row-start-2 flex flex-col relative h-screen sm:col-start-3">
-          <div className="flex flex-col items-end pt-16 sm:pt-6">
+          <div className="flex flex-col items-end">
             <Button onClick={() => handleChoice('H')} label={'Hit'} disabled={disableButtons} />
             <Button onClick={() => handleChoice('SP')} label={'Split'} disabled={disableButtons} />
             <Button
@@ -90,6 +83,24 @@ const StrategyTraining = () => {
             <Button onClick={handleReset} label={'Reset'} />
           </div>
         </div>
+
+        {/* Player Displays */}
+        <div className="col-stat-3 row-stat-1">
+          <PlayerAccuracy totalHands={totalPlayerHands} correctChoices={totalPlayerCorrectChoices} />
+        </div>
+
+        {displayBlackJack && <BlackJack />}
+        {playerFeedback && <InteractiveFeedback string={playerFeedback} />}
+
+        {insuranceDisplayed && (
+          <Insurance
+            handleInsuranceDeclined={handleInsuranceDeclined}
+            handleInsuranceAccepted={handleInsuranceAccepted}
+          />
+        )}
+
+        {/* Instructions */}
+
         {isInstructionsOpen && (
           <HowToPlay onClick={toggleInstructions} heading={instructionsHeading} instructions={instructions} />
         )}

@@ -2,12 +2,17 @@ import NavBar from '../components/NavBar'
 
 const StrategyCard = () => {
   return (
-    <main className="h-full pb-24 relative" style={{ backgroundColor: '#0a5733' }}>
+    <main className="min-h-screen pb-24 relative bg-green-700">
       <NavBar />
       <div className="flex flex-col items-center justify-center pt-14">
-        <img src="/assets/StrategyCard.jpg" alt="" className="w-4/5 rounded-xl" />
+        <img
+          src={new URL('/assets/StrategyCard.jpg', import.meta.url).href}
+          alt=""
+          className="w-full md:w-4/5 mt-14 rounded-xl"
+        />
       </div>
     </main>
   )
 }
+
 export default StrategyCard

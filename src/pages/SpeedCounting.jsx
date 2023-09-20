@@ -15,6 +15,8 @@ import TestPlayerResponse from '../components/TestPlayerResponse'
 import useGame from '../components/useGame'
 import { instructionalText } from '../components/instructionalText'
 import HowToPlay from '../components/HowToPlay'
+import NavBar from '../components/NavBar'
+import Footer from '../components/Footer'
 
 const testing = false
 
@@ -50,6 +52,7 @@ const SpeedCounting = () => {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-700">
+      <NavBar />
       <div className="grid grid-cols-1 p-4 gap-0 grid-rows-2 w-[1255px] h-[855px] bg-green-700  overflow-hidden relative rounded-2xl sm:grid-cols-3 ">
         {/* Dealer and Player Cards */}
 
@@ -89,6 +92,18 @@ const SpeedCounting = () => {
           {testing && <HandTotal total={handTotal(dealerCards)} />}
         </div>
 
+        {/* Buttons */}
+
+        <div className="col-start-3 row-start-2 relative">
+          <div className="flex items-end flex-col mt-56 ">
+            <Button onClick={() => handlePauseToggle(action)} label={paused ? 'Start' : 'Pause'} />
+            <Link to="/">
+              <Button label={'Quit'} />
+            </Link>
+            <Button onClick={handleReset} label={'Reset'} />
+          </div>
+        </div>
+
         {/* Test Display */}
 
         {playerFeedback && <InteractiveFeedback string={playerFeedback} />}
@@ -107,17 +122,8 @@ const SpeedCounting = () => {
           />
         )}
 
-        {/* Buttons */}
+        {/* Instructions */}
 
-        <div className="col-start-3 row-start-2 relative">
-          <div className="flex items-end flex-col mt-56 ">
-            <Button onClick={() => handlePauseToggle(action)} label={paused ? 'Start' : 'Pause'} />
-            <Link to="/">
-              <Button label={'Quit'} />
-            </Link>
-            <Button onClick={handleReset} label={'Reset'} />
-          </div>
-        </div>
         {isInstructionsOpen && (
           <HowToPlay onClick={toggleInstructions} heading={instructionsHeading} instructions={instructions} />
         )}
