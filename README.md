@@ -12,7 +12,7 @@
   <p align="center">
     Great way to learn card counting and basic Blackjack Strategy!
     <br />
-    <a href="https://github.com/Childebrand94/blackjack-trainer"><strong>Explore the docs »</strong></a>
+    <a href="https://childebrand94.github.io/blackjack-trainer/"><strong>PLAY</strong></a>
     <br />
     <br />
     <a href="https://github.com/Childebrand94/blackjack-trainer">View Demo</a>
@@ -20,6 +20,8 @@
     <a href="https://github.com/Childebrand94/blackjack-trainer/issues">Report Bug</a>
     ·
     <a href="https://github.com/Childebrand94/blackjack-trainer/issues">Request Feature</a>
+    .
+   
   </p>
 </div>
 
