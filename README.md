@@ -53,7 +53,7 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+![Alt Text](./public/ReadMeVideos/BasicStrategy.gif)
 
 This repository hosts the source code for a comprehensive Blackjack Trainer app designed to educate users about playing perfect blackjack strategy and mastering the high-low card counting technique. The app provides an immersive learning experience that guides users through optimal decision-making during blackjack gameplay and teaches the fundamentals of card counting. By blending interactive gameplay scenarios with informative tutorials, this app aims to enhance users' blackjack skills and understanding of advanced strategies.
 
@@ -100,6 +100,8 @@ Before you begin, ensure you have the following prerequisites installed:
 
 Welcome to the Blackjack Trainer! This trainer is designed to help you improve your Blackjack skills through three different modes: Basic Strategy, High-Low Card Counting, and Realistic Scenario. Here's how to get started with each mode:
 
+![Alt Text](./public/ReadMeVideos/BasicStrategy.gif)
+
 ### Basic Strategy Mode
 
 In Basic Strategy Mode, you'll learn the fundamental strategy for playing Blackjack optimally. Follow these steps:
@@ -112,6 +114,8 @@ In Basic Strategy Mode, you'll learn the fundamental strategy for playing Blackj
 
 4. **Review**: After each hand, review the trainer's feedback to understand why certain decisions were recommended.
 
+![Alt Text](./public/ReadMeVideos/Hi-Low-Counting.gif)
+
 ### High-Low Card Counting Mode
 
 In High-Low Card Counting Mode, you'll dive into the world of card counting to gain an advantage at Blackjack. Here's how to use this mode:
@@ -123,6 +127,8 @@ In High-Low Card Counting Mode, you'll dive into the world of card counting to g
 3. **Practice Card Counting**: Use the trainer to practice card counting in a simulated Blackjack environment.
 
 4. **Refine Your Skills**: Keep practicing to improve your card counting abilities and increase your edge against the house.
+
+![Alt Text](./public/ReadMeVideos/RealisticScenario.gif)
 
 ### Realistic Scenario Mode
 
