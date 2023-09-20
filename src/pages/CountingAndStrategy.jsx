@@ -55,7 +55,7 @@ const StrategyTraining = () => {
   return (
     <div className="flex justify-center items-center h-screen bg-gray-700">
       <NavBar />
-      <div className="grid grid-cols-1 p-4 gap-0 grid-rows-2 w-[1255px] h-[855px] bg-green-700  overflow-hidden relative rounded-2xl sm:grid-cols-3 ">
+      <div className="grid grid-cols-1 p-4 gap-0 grid-rows-2 w-[1255px] h-[750px] sm:h-[855px] bg-green-700 mt-20 overflow-hidden relative rounded-2xl sm:grid-cols-3 ">
         {/* Dealer and Player Hands  */}
 
         <div className="col-start-1 row-start-1 relative min-w-[300px] min-h-[400px] sm:col-start-2">
@@ -102,7 +102,6 @@ const StrategyTraining = () => {
             <Button onClick={() => handleChoice('SP')} label={'Split'} disabled={disableButtons} />
             <Button onClick={() => handleChoice('D')} label={'Double'} disabled={disableButtons} />
             <Button onClick={() => handleChoice('S')} label={'Stand'} disabled={disableButtons} />
-            <Button onClick={() => handleChoice('SUR')} label={'Surrender'} />
             <Button onClick={handleReset} label={'Reset'} />
             <Link to="/">
               <Button label={'Quit'} />
