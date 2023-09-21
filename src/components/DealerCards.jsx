@@ -19,7 +19,7 @@ const DealerCards = ({ cards, faceDown }) => {
           <img
             key={nanoid()}
             style={getImageStyle(index)}
-            className="absolute"
+            className="absolute max-h-24 sm:max-h-44 "
             src={
               faceDown && index === 0
                 ? new URL('/assets/Cards/cardBack_red1.png', import.meta.url).href

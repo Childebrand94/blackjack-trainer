@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 const Home = () => {
   return (
-    <div className="h-screen relative flex flex-col justify-center items-center bg-green-700">
+    <div className="h-screen relative flex flex-col justify-center items-center bg-green-700  overflow-hidden ">
       <NavBar />
 
       <div className="flex flex-col items-center text-center text-white">

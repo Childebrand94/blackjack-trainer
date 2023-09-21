@@ -8,13 +8,13 @@ const HowToPlay = ({ onClick, heading, instructions }) => {
       <div className="w-full flex space-x-10 justify-center pt-4">
         <Link
           to="/StrategyCard"
-          className="px-6 ml-3 py-3 w-44 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-full text-lg hover:text-gray-300 transition duration-300"
+          className="px-6 ml-3 py-1 sm:py-3 w-44 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-full sm:text-lg hover:text-gray-300 transition duration-300"
         >
           Strategy Card
         </Link>
         <button
           onClick={onClick}
-          className="px-6 ml-3 w-44 py-3 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-full text-lg hover:text-gray-300 transition duration-300"
+          className="px-6 ml-3 w-44 py-1 sm:py-3 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-full sm:text-lg hover:text-gray-300 transition duration-300"
         >
           Close
         </button>
