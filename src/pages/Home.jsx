@@ -11,7 +11,7 @@ const Home = () => {
         <h2 className="text-3xl font-semibold mb-8">Start out with Learning Basic Strategy</h2>
         <div className="flex flex-col sm:flex-row">
           <Link
-            to="/StrategyTraining"
+            to="/BasicStrategy"
             className="px-6 py-3 mb-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-full text-lg text-center hover:text-gray-300 transition duration-300"
           >
             Basic Strategy Mode

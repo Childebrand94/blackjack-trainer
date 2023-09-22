@@ -40,7 +40,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
 
   const [playerHands, setPlayerHands] = useState(initialPlayerHand)
   const [dealerCards, setDealerCards] = useState(initialDealerHand)
-  const [deckOfCards, setDeckOfCards] = useState(testing ? initialTestingDeck : initialDeck)
+  const [deckOfCards, setDeckOfCards] = useState(testing ? initialDeck : initialDeck)
   const [action, setAction] = useState(initialAction)
   const [dealCardFaceDown, setDealCardFaceDown] = useState(initialDealerCardFaceDown)
   const [activeHandIndex, setActiveHandIndex] = useState(initialPlayerHandIndex)
@@ -514,6 +514,9 @@ const useGame = ({ paused, delayTime, gameMode }) => {
         checkBlackjack: actions.checkBlackjack,
       },
     },
+    standBy: {
+      onEnter: () => {},
+    },
   }
   const handleStateTransition = () => {
     if (testing) {
@@ -534,6 +537,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
   }, [action, paused])
 
   return {
+    testing,
     playerHands,
     dealerCards,
     deckOfCards,
@@ -550,6 +554,7 @@ const useGame = ({ paused, delayTime, gameMode }) => {
     totalPlayerCorrectChoices,
     action,
     isInstructionsOpen,
+    initialDeckSize,
     handleReset,
     handleChoice,
     handlePlayerResponse,

@@ -2,7 +2,7 @@ import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/PlayerCards'
 import { gameModes } from '../functions/types'
-import { handTotal } from '../functions/pureFunctions'
+import { handTotal, getRunningCount, getTrueCount, getDecksRemaining } from '../functions/pureFunctions'
 import HandTotal from '../components/HandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
@@ -10,34 +10,42 @@ import Insurance from '../components/Insurance'
 import BlackJack from '../components/BlackJack'
 import InteractiveFeedback from '../components/InteractiveFeedback'
 import PlayerAccuracy from '../components/PlayerAccuracy'
+import CountStats from '../components/CountStats'
+import DecksRemaining from '../components/DecksRemaining'
+import TestPlayer from '../components/TestPlayer'
+import TestPlayerResponse from '../components/TestPlayerResponse'
 import useGame from '../components/useGame'
 import HowToPlay from '../components/HowToPlay'
 import { instructionalText } from '../components/instructionalText'
 import NavBar from '../components/NavBar'
-import Footer from '../components/Footer'
 
-const StrategyTraining = () => {
-  const testing = false
-
-  const delayTime = 180
-  const gameMode = gameModes.strategy
+const RealisticScenario = () => {
+  const gameMode = gameModes.countingStrategy
+  const delayTime = 200
   const instructionsHeading = instructionalText[gameMode].heading
   const instructions = instructionalText[gameMode].instructions
 
   const {
     playerHands,
     dealerCards,
+    deckOfCards,
     dealCardFaceDown,
     activeHandIndex,
+    dealtCards,
     playerFeedback,
+    correctPlayerResponse,
     displayBlackJack,
     insuranceDisplayed,
+    testPlayerDisplay,
     totalPlayerHands,
     totalPlayerCorrectChoices,
     disableButtons,
     isInstructionsOpen,
+    testing,
+    initialDeckSize,
     handleReset,
     handleChoice,
+    handlePlayerResponse,
     handleInsuranceAccepted,
     handleInsuranceDeclined,
     toggleInstructions,
@@ -47,7 +55,8 @@ const StrategyTraining = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-700">
       <NavBar />
       <div className="grid grid-cols-1 p-4 gap-0 grid-rows-2 w-[1255px] h-[750px] sm:h-[855px] bg-green-700 mt-20 overflow-hidden relative rounded-2xl sm:grid-cols-3 ">
-        {/* Dealer and Player cards */}
+        {/* Dealer and Player Hands  */}
+
         <div className="col-start-1 row-start-1 relative min-w-[300px] min-h-[400px] sm:col-start-2">
           <DealerCards cards={dealerCards} faceDown={dealCardFaceDown} />
         </div>
@@ -56,12 +65,32 @@ const StrategyTraining = () => {
             return <PlayerCards key={nanoid()} cards={hand} />
           })}
         </div>
-        {/* Hand Totals */}
-        <div className="col-start-1 row-start-1 relative sm:row-start-2 mt-14 sm:mt-0  ">
-          <HandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />
+
+        {/* Hand Totals  */}
+        <div className="col-start-1 row-start-1 relative sm:row-start-2 ">
+          {testing && <HandTotal total={handTotal(playerHands[activeHandIndex % playerHands.length])} />}
         </div>
         <div className="col-start-1 row-start-1 relative">
           {testing && <HandTotal total={handTotal(dealerCards)} />}
+        </div>
+
+        {/* Running, True, DeckReaming Displays */}
+
+        <div className="col-stat-3 row-stat-1 p-6"></div>
+
+        <div className="col-start-1 row-start-2 pt-24 relative flex flex-col sm:items-start">
+          <PlayerAccuracy totalHands={totalPlayerHands} correctChoices={totalPlayerCorrectChoices} />
+          <DecksRemaining cardsDealt={dealtCards.length} />
+          {testing && (
+            <>
+              <CountStats label={'Running Count'} stat={getRunningCount(dealtCards)} />
+              <CountStats
+                label={'True Count'}
+                stat={getTrueCount(getRunningCount(dealtCards), getDecksRemaining(dealtCards.length, initialDeckSize))}
+              />
+              <CountStats label={'Decks Remaining'} stat={getDecksRemaining(dealtCards.length, initialDeckSize)} />
+            </>
+          )}
         </div>
 
         {/* Buttons */}
@@ -70,26 +99,16 @@ const StrategyTraining = () => {
           <div className="flex flex-col items-end">
             <Button onClick={() => handleChoice('H')} label={'Hit'} disabled={disableButtons} />
             <Button onClick={() => handleChoice('SP')} label={'Split'} disabled={disableButtons} />
-            <Button
-              onClick={() => handleChoice('D')}
-              label={'Double'}
-              disabled={disableButtons || playerHands[activeHandIndex % playerHands.length].length > 2}
-            />
+            <Button onClick={() => handleChoice('D')} label={'Double'} disabled={disableButtons} />
             <Button onClick={() => handleChoice('S')} label={'Stand'} disabled={disableButtons} />
+            <Button onClick={handleReset} label={'Reset'} />
             <Link to="/">
               <Button label={'Quit'} />
             </Link>
-            <Button onClick={handleReset} label={'Reset'} />
           </div>
         </div>
 
-        {/* Player Displays */}
-        <div className="col-stat-3 row-stat-1">
-          <PlayerAccuracy totalHands={totalPlayerHands} correctChoices={totalPlayerCorrectChoices} />
-        </div>
-
-        {displayBlackJack && <BlackJack />}
-        {playerFeedback && <InteractiveFeedback string={playerFeedback} />}
+        {/* Insurance Module */}
 
         {insuranceDisplayed && (
           <Insurance
@@ -97,8 +116,28 @@ const StrategyTraining = () => {
             handleInsuranceAccepted={handleInsuranceAccepted}
           />
         )}
+        {displayBlackJack && <BlackJack />}
+        {playerFeedback && <InteractiveFeedback string={playerFeedback} />}
 
-        {/* Instructions */}
+        {/* Testing Player */}
+
+        {testPlayerDisplay && (
+          <TestPlayer
+            handlePlayerResponse={handlePlayerResponse}
+            runningCount={getRunningCount(dealtCards)}
+            trueCount={getTrueCount(getRunningCount(dealtCards), getDecksRemaining(dealtCards.length, initialDeckSize))}
+          />
+        )}
+        {correctPlayerResponse && (
+          <TestPlayerResponse
+            correctResponse={correctPlayerResponse}
+            runningCount={getRunningCount(dealtCards)}
+            trueCount={getTrueCount(
+              getRunningCount(dealtCards),
+              getDecksRemaining(dealerCards.length, initialDeckSize)
+            )}
+          />
+        )}
 
         {isInstructionsOpen && (
           <HowToPlay onClick={toggleInstructions} heading={instructionsHeading} instructions={instructions} />
@@ -107,4 +146,4 @@ const StrategyTraining = () => {
     </div>
   )
 }
-export default StrategyTraining
+export default RealisticScenario

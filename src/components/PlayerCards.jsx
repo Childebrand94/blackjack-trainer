@@ -14,7 +14,7 @@ const PlayerCards = ({ cards }) => {
         <img
           key={nanoid()}
           style={getImageStyle(card, index)}
-          className={`absolute top-36 sm:bottom-0 max-h-24 sm:max-h-44 transform ${
+          className={`absolute top-44 sm:top-56 sm:bottom-0 max-h-24 sm:max-h-44 transform ${
             card.double === true ? 'rotate-90' : ''
           }`}
           src={`${new URL('/assets/Cards', import.meta.url).href}/card${card.suit}${card.name}.png`}

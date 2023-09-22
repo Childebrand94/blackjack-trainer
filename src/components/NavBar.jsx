@@ -37,17 +37,17 @@ const NavBar = () => {
           } space-y-2 md:space-y-0 md:space-x-7 mt-4 md:mt-0`}
         >
           <li>
-            <Link to="/StrategyTraining" className="text-white hover:text-gray-300">
+            <Link to="/BasicStrategy" className="text-white hover:text-gray-300">
               Basic Strategy Mode
             </Link>
           </li>
           <li>
-            <Link to="/SpeedCounting" className="text-white hover:text-gray-300">
+            <Link to="/HighLowCardCounting" className="text-white hover:text-gray-300">
               High-Low Card Counting Mode
             </Link>
           </li>
           <li>
-            <Link to="/CountingAndStrategy" className="text-white hover:text-gray-300">
+            <Link to="/RealisticScenario" className="text-white hover:text-gray-300">
               Realistic Scenario Mode
             </Link>
           </li>

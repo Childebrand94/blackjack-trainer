@@ -3,7 +3,7 @@ import Button from '../components/Button'
 import DealerCards from '../components/DealerCards'
 import PlayerCards from '../components/PlayerCards'
 import { gameModes } from '../functions/types'
-import { handTotal, getRunningCount, getTrueCount } from '../functions/pureFunctions'
+import { handTotal, getRunningCount, getTrueCount, getDecksRemaining } from '../functions/pureFunctions'
 import HandTotal from '../components/HandTotal'
 import { Link } from 'react-router-dom'
 import { nanoid } from 'nanoid'
@@ -16,11 +16,8 @@ import useGame from '../components/useGame'
 import { instructionalText } from '../components/instructionalText'
 import HowToPlay from '../components/HowToPlay'
 import NavBar from '../components/NavBar'
-import Footer from '../components/Footer'
 
-const testing = false
-
-const SpeedCounting = () => {
+const HighLowCardCounting = () => {
   const initialPauseState = true
   const delayTime = 250
   const gameMode = gameModes.speedCounting
@@ -34,9 +31,9 @@ const SpeedCounting = () => {
   }
 
   const {
+    testing,
     playerHands,
     dealerCards,
-    deckOfCards,
     dealCardFaceDown,
     activeHandIndex,
     dealtCards,
@@ -45,13 +42,14 @@ const SpeedCounting = () => {
     testPlayerDisplay,
     action,
     isInstructionsOpen,
+    initialDeckSize,
     handleReset,
     handlePlayerResponse,
     toggleInstructions,
   } = useGame({ paused, delayTime, gameMode })
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-700">
+    <div className="flex justify-center items-center min-h-screen bg-gray-700">
       <NavBar />
       <div className="grid grid-cols-1 p-4 gap-0 grid-rows-2 w-[1255px] h-[750px] sm:h-[855px] bg-green-700 mt-20 overflow-hidden relative rounded-2xl sm:grid-cols-3 ">
         {/* Dealer and Player Cards */}
@@ -75,9 +73,9 @@ const SpeedCounting = () => {
               <CountStats label={'Running Count'} stat={getRunningCount(dealtCards)} />
               <CountStats
                 label={'True Count'}
-                stat={getTrueCount(getRunningCount(dealtCards), deckOfCards.length / 52)}
+                stat={getTrueCount(getRunningCount(dealtCards), getDecksRemaining(dealtCards.length, initialDeckSize))}
               />
-              <CountStats label={'Decks Remaining'} stat={(deckOfCards.length / 52).toFixed(2)} />
+              <CountStats label={'Decks Remaining'} stat={getDecksRemaining(dealtCards.length, initialDeckSize)} />
             </>
           )}
         </div>
@@ -111,14 +109,14 @@ const SpeedCounting = () => {
           <TestPlayer
             handlePlayerResponse={handlePlayerResponse}
             runningCount={getRunningCount(dealtCards)}
-            trueCount={getTrueCount(getRunningCount(dealtCards), deckOfCards.length / 52)}
+            trueCount={getTrueCount(getRunningCount(dealtCards), getDecksRemaining(dealtCards.length, initialDeckSize))}
           />
         )}
         {correctPlayerResponse && (
           <TestPlayerResponse
             correctResponse={correctPlayerResponse}
             runningCount={getRunningCount(dealtCards)}
-            trueCount={getTrueCount(getRunningCount(dealtCards), deckOfCards.length / 52)}
+            trueCount={getTrueCount(getRunningCount(dealtCards), getDecksRemaining(dealtCards.length, initialDeckSize))}
           />
         )}
 
@@ -131,4 +129,4 @@ const SpeedCounting = () => {
     </div>
   )
 }
-export default SpeedCounting
+export default HighLowCardCounting
