@@ -163,7 +163,21 @@ export const getRunningCount = (hand) => {
 
 // getTrueCount :: Number -> Number -> Number
 export const getTrueCount = (runningCount, decksRemaining) => {
-  return Math.floor(runningCount / decksRemaining)
+  return Math.round(runningCount / decksRemaining)
+}
+
+// getDecksRemaining :: (Number, Number) -> Number
+export const getDecksRemaining = (numberOfCards, initialShoeSize) => {
+  // Calculate the number of decks dealt
+  const decksDealt = numberOfCards / 52
+
+  // Round to the nearest 0.5 deck
+  const roundedDecksDealt = Math.round(decksDealt * 2) / 2
+
+  // Calculate the approximate number of decks remaining in the playable shoe
+  const decksRemaining = initialShoeSize - roundedDecksDealt
+
+  return decksRemaining
 }
 
 // shuffleDeck :: Card[] -> Card[]
